@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="row border rounded-5 p-3 bg-white shadow box-area">
+        <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style="background: #103cbe;">
+            <div class="featured-image mb-3">
+             <img th:src="@{/images/verificar.png}" class="img-fluid" style="width: 250px;">
+            </div>
+            <p class="text-white fs-2" style="font-family: 'Courier New', Courier, monospace; font-weight: 600;">REGISTRO SEGURO</p>
+            <small class="text-white text-wrap text-center" style="width: 17rem;font-family: 'Courier New', Courier, monospace;">Rellena el formulario con tu información básica.</small>
+        </div> 
+        <div class="col-md-6 right-box">
+           <div class="row align-items-center">
+                 <form th:action="@{/register}" method="post" th:object="${user}">   
+                     <div class="header-text mb-4">
+                         <h2>Registrate en Fooddrive</h2>
+                         <p>Nos alegra tenerte por aquí.</p>
+                     </div>
+                     <div class="input-group mb-3">
+                         <input type="text" class="form-control form-control-lg bg-light fs-6" id="username" th:field="*{username}" placeholder="Ingrese un nombre de usuario" required>
+                     </div>
+                     <div class="input-group mb-1">
+                         <input type="password" class="form-control form-control-lg bg-light fs-6" id="password" th:field="*{password}" placeholder="Ingrese una contraseña" required>
+                     </div>
+
+                     <div class="input-group mb-3">
+                        <div class="row">
+                            <small>Al registrarte aceptas compartir tu información con fooddrive.</small>
+                         </div>
+                         <button class="btn btn-lg btn-primary w-100 fs-6">Registrarse</button>
+                     </div>
+                     <div class="row">
+                         <small>¿Ya tienes una cuenta? <a th:href="@{/login}">Inicia sesión</a></small>
+                     </div>
+                 </form>
+           </div>
+        </div> 
+       </div>
+     </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center">
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Gestión de Productos</li>
+                    </ol>
+                </nav>
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Gestión de Productos</h1>
+                </div>
+
+                <nav class="navbar bg-body-tertiary">
+                    <div class="container-fluid">
+                        <button class="btn btn-primary" type="submit">Registrar Nuevo Producto</button>
+                      <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Buscar Producto" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Buscar</button>
+                      </form>
+                    </div>
+                  </nav>
+
+                <!-- Tabla de datos-->
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Codigo</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">precio</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Categoria</th>
+                        <th scope="col">Disponivilidad</th>
+                        <th scope="col">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="producto : ${producto}">
+                        <!--<th scope="row">1</th>-->
+                        <td th:text="${producto.id_producto}"></td>
+                        <td th:text="${producto.imagen}"></td>
+                         <td th:text="${producto.nombre}"></td>
+                        <td th:text="'$' + ${producto.precio}"></td>
+                        <td th:text="${producto.cantidad}"></t>
+                        <td th:text="${producto.descripcion}"></t>
+                        <td th:text="${producto.categoria.nombre}"></t>
+                        <td th:text="${producto.disponivilidad}"></t>
+                        <!--<td><span th:each="role : ${usuario.roles}" th:text="${role.name}"></span></td>
+                        <td th:text="${usuario.estado}"></td> -->
+                        <td>
+                            <a href="#" th:href="@{/edit/{id}(id=${producto.id_producto})}">Editar</a> |
+                            <a href="#" th:href="@{/delete/{id}(id=${producto.id_producto})}">Eliminar</a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>  
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

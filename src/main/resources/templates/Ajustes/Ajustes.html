@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center">
+
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Administración del Sitio</li>
+                    </ol>
+                </nav>
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Administración de Sitio</h1>
+                </div>
+
+                <!--Tarjetas de Opciones-->
+                <div class="card-group row row-cols-1 row-cols-md-4 g-4">
+                    <div class="col">
+                        <div class="card" style="width: 100%;">
+                            <div style="text-align: center;">
+                                <img th:src="@{/images/Ajustes/usuarios.png}" class="card-img-top" alt="..." style="width: 50%; height: auto;">
+                            </div>
+                            <div class="card-body">
+                              <h5 class="card-title">Administración de Usuarios</h5>
+                              <p class="card-text">Esta sección permite gestionar los usuarios del sistema, incluyendo la creación, edición, y eliminación de cuentas, así como la asignación de roles y permisos.</p>
+                              <a th:href="@{/Usuarios}" class="btn btn-primary">Acceder</a>
+                            </div>
+                          </div>
+                    </div>
+                    <div class="col">
+                        <div class="card" style="width: 100%;">
+                            <div style="text-align: center;">
+                                <img th:src="@{/images/Ajustes/puntos.png}" class="card-img-top" alt="..." style="width: 50%; height: auto;">
+                            </div>
+                            <div class="card-body">
+                              <h5 class="card-title">Programa de Lealtad y Cupones</h5>
+                              <p class="card-text">Permite crear, asignar y monitorear cupones de descuento y beneficios exclusivos, incentivando la fidelidad de los clientes y mejorando su experiencia de compra.</p>
+                              <a href="#" class="btn btn-primary">Acceder</a>
+                            </div>
+                          </div>
+                    </div>
+                    <div class="col">
+                        <div class="card" style="width: 100%;">
+                            <div style="text-align: center;">
+                                <img th:src="@{/images/Ajustes/reportes.png}" class="card-img-top" alt="..." style="width: 50%; height: auto;">
+                            </div>
+                            <div class="card-body">
+                              <h5 class="card-title">Reportes y Estadisticas</h5>
+                              <p class="card-text">Esta sección ofrece un análisis detallado de los datos del sistema. Generar informes sobre ventas, usuarios, productos, entre otros, y acceder a estadísticas en tiempo real</p>
+                              <a href="#" class="btn btn-primary">Acceder</a>
+                            </div>
+                          </div>
+                    </div>
+                    <div class="col">
+                        <div class="card" style="width: 100%;">
+                            <div style="text-align: center;">
+                                <img th:src="@{/images/Ajustes/configuraciones.png}" class="card-img-top" alt="..." style="width: 50%; height: auto;">
+                            </div>
+                            <div class="card-body">
+                              <h5 class="card-title">Configuración del Negocio</h5>
+                              <p class="card-text">Personalizar los detalles del negocio según las necesidades, asegurando que todos los aspectos operativos se alineen con la estrategia y objetivos del negocio.</p>
+                              <a href="#" class="btn btn-primary">Acceder</a>
+                            </div>
+                          </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>  
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

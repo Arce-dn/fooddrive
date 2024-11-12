@@ -18,34 +18,34 @@
                     <i class="lni lni-grid-alt"></i>
                 </button>
                 <div class="sidebar-logo">
-                    <a href="#">FOOD-DRIVE</a>
+                    <a th:href="@{/Inicio}">FOOD-DRIVE</a>
                 </div>
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
                         <i class="lni lni-user"></i>
-                        <span>Programa de lealtad</span>
+                        <span>Menú y Productos</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
                         <i class="lni lni-agenda"></i>
-                        <span>Catálogo de productos</span>
+                        <span>Pedidos</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
                         <i class="lni lni-protection"></i>
-                        <span>Menú diario</span>
+                        <span>Despacho de Pedidos</span>
                     </a>
                     <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Pedidos</a>
+                            <a href="#" class="sidebar-link">Órdenes en Preparación</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Entregados</a>
+                            <a href="#" class="sidebar-link">Órdenes Completadas</a>
                         </li>
                     </ul>
                 </li>
@@ -53,11 +53,11 @@
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
                         <i class="lni lni-popup"></i>
-                        <span>Despacho de pedidos</span>
+                        <span>Mis Ordenes</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a th:href="@{/Ajustes}" class="sidebar-link">
                         <i class="lni lni-cog"></i>
                         <span>Configuraciones</span>
                     </a>

@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user) {
-        Role defaultRole = roleRepository.findByName("Encargado del Menú").orElseThrow();
+        Role defaultRole = roleRepository.findByName("Administrador").orElseThrow();
         user.getRoles().add(defaultRole);
         userService.save(user);
         return "redirect:/login"; // Redirige después del registro

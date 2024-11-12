@@ -31,7 +31,7 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .permitAll()
-                .defaultSuccessUrl("/home", true) // Redirecciona a la página principal después de iniciar sesión
+                .defaultSuccessUrl("/Inicio", true) // Redirecciona a la página principal después de iniciar sesión
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")// URL de cierre de sesión

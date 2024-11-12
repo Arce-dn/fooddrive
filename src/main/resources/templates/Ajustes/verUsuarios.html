@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center">
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                      <li class="breadcrumb-item"><a th:href="@{/Ajustes}">Administración del Sitio</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Gestión de Usuarios</li>
+                    </ol>
+                </nav>
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Gestión de Usuarios</h1>
+                </div>
+
+                <nav class="navbar bg-body-tertiary">
+                    <div class="container-fluid">
+                        <button class="btn btn-primary" type="submit">Registrar Nuevo Usuario</button>
+                      <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Buscar Usuario" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Buscar</button>
+                      </form>
+                    </div>
+                  </nav>
+
+                <!-- Tabla de datos-->
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre Completo</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Rol</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="usuario : ${usuarios}">
+                        <th scope="row">1</th>
+                        <td th:text="${usuario.nombreCompleto}"></td>
+                        <td th:text="${usuario.email}"></td>
+                        <td th:text="${usuario.username}"></td>
+                        <td><span th:each="role : ${usuario.roles}" th:text="${role.name}"></span></td>
+                        <td th:text="${usuario.estado}"></td>
+                        <td>
+                            <a href="#" th:href="@{/edit/{id}(id=${usuario.id})}">Editar</a> |
+                            <a href="#" th:href="@{/delete/{id}(id=${usuario.id})}">Eliminar</a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>  
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

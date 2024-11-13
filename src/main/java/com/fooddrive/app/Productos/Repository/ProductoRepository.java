@@ -1,4 +1,4 @@
-package com.fooddrive.app.seguridad.Repository;
+package com.fooddrive.app.Productos.Repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;

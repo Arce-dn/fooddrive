@@ -1,12 +1,12 @@
-package com.fooddrive.app.seguridad.Service;
+package com.fooddrive.app.Productos.Service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fooddrive.app.Productos.Repository.ProductoRepository;
 import com.fooddrive.app.entity.Producto;
-import com.fooddrive.app.seguridad.Repository.ProductoRepository;
 
 
 @Service

@@ -24,7 +24,7 @@ import jakarta.persistence.Entity;
      private Double precio;
      private int cantidad;
      private String descripcion;
-     private boolean disponivilidad;
+     private boolean disponibilidad;
 
      private Producto(){}
 
@@ -71,11 +71,11 @@ import jakarta.persistence.Entity;
      public void setDescripcion(String descripcion) {
          this.descripcion = descripcion;
      }
-     public boolean isDisponivilidad() {
-         return disponivilidad;
+     public boolean isDisponibilidad() {
+         return disponibilidad;
      }
-     public void setDisponivilidad(boolean disponivilidad) {
-         this.disponivilidad = disponivilidad;
+     public void setDisponibilidad(boolean disponibilidad) {
+         this.disponibilidad = disponibilidad;
      }
 
     public Categoria getCategoria() {
@@ -89,8 +89,8 @@ import jakarta.persistence.Entity;
     @Override
     public String toString() {
         return "Producto [id_producto=" + id_producto + ", imagen=" + Arrays.toString(imagen) + ", nombre=" + nombre
-                + ", precio=" + precio + ", cantidad=" + cantidad + ", descripcion=" + descripcion + ", disponivilidad="
-                + disponivilidad + ", categoria=" + categoria + "]";
+                + ", precio=" + precio + ", cantidad=" + cantidad + ", descripcion=" + descripcion + ", disponibilidad="
+                + disponibilidad + ", categoria=" + categoria + "]";
     }
 
  }

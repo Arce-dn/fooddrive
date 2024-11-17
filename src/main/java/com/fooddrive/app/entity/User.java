@@ -1,6 +1,6 @@
 package com.fooddrive.app.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,20 +20,23 @@ public class User {
     private String nombreCompleto;
     private String email;
     private String telefono;
-    private LocalDateTime fechaRegistro;
+    private LocalDate fechaRegistro;
     private String estado;
     private String direccionPrincipal;
-    private LocalDateTime ultimaFechaAcceso;
+    private LocalDate ultimaFechaAcceso;
     private String direccionAlternativa;
     private String disponibilidad;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProgramaLealtad programaLealtad;
 
     // Constructor vacío
     public User() {
@@ -45,10 +48,14 @@ public class User {
         this.password = password;
         this.roles = roles;
     }
+    public User(String nombreCompleto, String email) {
+        this.nombreCompleto = nombreCompleto;
+        this.email = email;
+    }
 
     //Constructor completo si tiene todos los datos
     public User(String username, String password, String nombreCompleto, String email, String telefono, 
-            LocalDateTime fechaRegistro, String estado, String direccionPrincipal, LocalDateTime ultimaFechaAcceso, 
+            LocalDate fechaRegistro, String estado, String direccionPrincipal, LocalDate ultimaFechaAcceso, 
             String direccionAlternativa, String disponibilidad) {
         this.username = username;
         this.password = password;
@@ -107,8 +114,8 @@ public class User {
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    public LocalDateTime getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+    public LocalDate getFechaRegistro() { return fechaRegistro; }
+    public void setFechaRegistro(LocalDate fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
@@ -116,8 +123,8 @@ public class User {
     public String getDireccionPrincipal() { return direccionPrincipal; }
     public void setDireccionPrincipal(String direccionPrincipal) { this.direccionPrincipal = direccionPrincipal; }
 
-    public LocalDateTime getUltimaFechaAcceso() { return ultimaFechaAcceso; }
-    public void setUltimaFechaAcceso(LocalDateTime ultimaFechaAcceso) { this.ultimaFechaAcceso = ultimaFechaAcceso; }
+    public LocalDate getUltimaFechaAcceso() { return ultimaFechaAcceso; }
+    public void setUltimaFechaAcceso(LocalDate ultimaFechaAcceso) { this.ultimaFechaAcceso = ultimaFechaAcceso; }
 
     public String getDireccionAlternativa() { return direccionAlternativa; }
     public void setDireccionAlternativa(String direccionAlternativa) { this.direccionAlternativa = direccionAlternativa; }

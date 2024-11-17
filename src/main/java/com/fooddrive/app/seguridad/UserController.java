@@ -1,5 +1,7 @@
 package com.fooddrive.app.seguridad;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +34,7 @@ public class UserController {
     public String registerUser(@ModelAttribute User user) {
         Role defaultRole = roleRepository.findByName("Administrador").orElseThrow();
         user.getRoles().add(defaultRole);
+        user.setFechaRegistro(LocalDate.now());
         userService.save(user);
         return "redirect:/login"; // Redirige después del registro
     }

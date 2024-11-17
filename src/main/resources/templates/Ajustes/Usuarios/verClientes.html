@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center">
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                      <li class="breadcrumb-item"><a th:href="@{/Ajustes}">Administración del Sitio</a></li>
+                      <li class="breadcrumb-item"><a th:href="@{/Usuarios}">Gestión de Usuarios</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Gestión de Clientes</li>
+                    </ol>
+                </nav>
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Gestión de Usuarios</h1>
+                </div>
+
+                <nav class="navbar bg-body-tertiary">
+                    <div class="container-fluid">
+                      <div class="d-grid gap-2 d-md-block">
+                        <a th:href="@{/Usuarios}" class="btn btn-secondary">Administrar Usuarios Administrativos</a>
+                      </div>
+                      <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Buscar Usuario" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Buscar</button>
+                      </form>
+                    </div>
+                  </nav>
+
+                <!-- Tabla de datos-->
+                <table class="table">
+                    <thead class="table-dark">
+                      <tr>
+                        <th scope="col">Identificador</th>
+                        <th scope="col">Nombre Completo</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Rol</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="usuario : ${usuarios}">
+                        <th th:text="${usuario.id}"></th>
+                        <td th:text="${usuario.nombreCompleto}"></td>
+                        <td th:text="${usuario.email}"></td>
+                        <td th:text="${usuario.username}"></td>
+                        <td><span th:each="role : ${usuario.roles}" th:text="${role.name}"></span></td>
+                        <td th:text="${usuario.estado}"></td>
+                        <td>
+                            <a class="btn btn-warning btn-warning" th:href="@{/Usuarios/editar/{id}(id=${usuario.id})}">Editar</a> |
+                            <button type="button" class="btn btn-danger btn-delete" th:data-id="${usuario.id}">
+                              Eliminar
+                            </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="agregarUsuarioModal" tabindex="-1" aria-labelledby="agregarUsuarioModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="agregarUsuarioModalLabel">Agregar Nuevo Usuario</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form th:action="@{/guardarUsuario}" th:object="${usuario}" method="post">
+                      <!-- Nombre Completo -->
+                      <div class="mb-3">
+                          <label for="nombreCompleto" class="form-label">Nombre Completo:</label>
+                          <input type="text" class="form-control" id="nombreCompleto" th:field="*{nombreCompleto}" required>
+                      </div>
+  
+                      <!-- Email -->
+                      <div class="mb-3">
+                          <label for="email" class="form-label">Email:</label>
+                          <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                      </div>
+  
+                      <!-- Username -->
+                      <div class="mb-3">
+                          <label for="username" class="form-label">Nombre de Usuario:</label>
+                          <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                      </div>
+  
+                      <!-- Rol -->
+                      <div class="mb-3">
+                          <label for="rol" class="form-label">Rol:</label>
+                          <select id="rol" class="form-select" th:field="*{roles}">
+                              <option th:each="role : ${roles}" 
+                                      th:value="${role.id}" 
+                                      th:text="${role.name}">
+                              </option>
+                          </select>
+                      </div>
+  
+                      <!-- Estado -->
+                      <div class="mb-3">
+                          <label for="estado" class="form-label">Estado:</label>
+                          <select id="estado" class="form-select" th:field="*{estado}">
+                              <option value="Activo">Activo</option>
+                              <option value="Inactivo">Inactivo</option>
+                          </select>
+                      </div>
+  
+                      <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                  </form>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+    <!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar eliminación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            ¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <form id="deleteForm" th:action="@{/eliminarUsuario/{id}(id=${usuarioId})}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer th:replace="~{plantilla :: footer}"></footer>
+
+    <script>
+      // Al hacer clic en el botón "Eliminar"
+      const deleteButtons = document.querySelectorAll('.btn-delete');
+      
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Obtener el ID del usuario desde el atributo data-id
+          const usuarioId = button.getAttribute('data-id');
+          
+          // Establecer la acción del formulario para eliminar el usuario
+          const deleteForm = document.getElementById('deleteForm');
+          deleteForm.setAttribute('action', '/eliminarUsuario/' + usuarioId);
+          
+          // Abrir el modal
+          new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+        });
+      });
+    </script>
+</body>
+</html>

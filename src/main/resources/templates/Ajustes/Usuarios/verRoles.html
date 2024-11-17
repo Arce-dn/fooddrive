@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center">
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                      <li class="breadcrumb-item"><a th:href="@{/Ajustes}">Administración del Sitio</a></li>
+                      <li class="breadcrumb-item"><a th:href="@{/Usuarios}">Gestión de Usuarios</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Gestión de Roles</li>
+                    </ol>
+                </nav>
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Gestión de Roles</h1>
+                </div>
+
+                <div class="row">
+                    <!--Tabla de Datos-->
+                    <div class="col-8">
+                        <table class="table">
+                            <thead class="table-dark ">
+                            <tr>
+                                <th scope="col">Identificador</th>
+                                <th scope="col">Rol</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="role : ${roles}">
+                                <th th:text="${role.id}"></th>
+                                <td th:text="${role.name}"></td>
+                                <td>
+                                    <!-- Botón para abrir el modal de edición -->
+                                    <button type="button" class="btn btn-warning edit-role-btn"
+                                            th:data-id="${role.id}" 
+                                            th:data-name="${role.name}"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#EditRoleModal">
+                                        Editar
+                                    </button>
+                                    <button type="button" class="btn btn-danger"
+                                            th:data-id="${role.id}" 
+                                            th:data-name="${role.name}"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#DeleteRoleModal">
+                                            Eliminar
+                                    </button>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#AgregarRol">Agregar Nuevo Rol</button>
+                          </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Agregar un nuevo rol -->
+    <div class="modal fade" id="AgregarRol" tabindex="-1" aria-labelledby="AgregarRol" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar Nuevo Rol</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form th:action="@{/añadirRole}" th:object="${newRole}" method="post">
+                <label class="form-label" for="name">Nombre del Rol:</label>
+                <input class="form-control" type="text" id="name" th:field="*{name}" required>
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Agregar</button>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+    
+    <!-- Modal para editar rol -->
+    <div class="modal fade" id="EditRoleModal" tabindex="-1" aria-labelledby="EditRoleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="EditRoleModalLabel">Editar Rol</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para editar el rol -->
+                    <form th:action="@{/update}" id="editRoleForm" method="post" >
+                        <input type="hidden" id="roleId" name="id" />
+                        <div class="mb-3">
+                            <label for="roleName" class="form-label">Nombre del Rol</label>
+                            <input type="text" id="roleName" class="form-control" name="name" required />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="DeleteRoleModal" tabindex="-1" aria-labelledby="DeleteRoleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DeleteRoleModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este rol? Esta acción no se puede deshacer.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <!-- Formulario para eliminar el rol, con Thymeleaf para establecer el action dinámicamente -->
+                    <form id="deleteRoleForm" th:action="@{/eliminar/{id}(id=${roleId})}" method="post">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{plantilla :: footer}"></footer>
+
+    <script>
+        // JavaScript para manejar la carga de datos en el modal
+        const editButtons = document.querySelectorAll('.edit-role-btn');
+
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Obtener los datos del rol desde los atributos del botón
+                const roleId = this.getAttribute('data-id');
+                const roleName = this.getAttribute('data-name');
+
+                // Asignar los valores a los campos del modal
+                document.getElementById('roleId').value = roleId;
+                document.getElementById('roleName').value = roleName;
+            });
+        });
+
+            // Cuando se haga clic en el enlace de eliminar
+            const deleteLinks = document.querySelectorAll('.btn-danger[data-bs-toggle="modal"]');
+
+        deleteLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                const roleId = this.getAttribute('data-id');
+                const roleName = this.getAttribute('data-name');
+
+                // Configura el formulario para eliminar el rol
+                const form = document.getElementById('deleteRoleForm');
+                form.action = '/eliminar/' + roleId;  // Establece la ruta de eliminación con el ID del rol
+
+                // Abre el modal con el mensaje de confirmación
+                document.getElementById('DeleteRoleModalLabel').textContent = '¿Estás seguro de eliminar el rol: ' + roleName + '?';
+            });
+        });
+    </script>
+</body>
+</html>

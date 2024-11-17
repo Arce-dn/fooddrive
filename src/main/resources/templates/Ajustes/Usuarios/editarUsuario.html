@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center">
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                      <li class="breadcrumb-item"><a th:href="@{/Ajustes}">Administración del Sitio</a></li>
+                      <li class="breadcrumb-item"><a th:href="@{/Usuarios}">Gestión de Usuarios</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Editar Usuario</li>
+                    </ol>
+                </nav>
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Editar Usuario</h1>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="fw-bold text-center flex-grow-1">Nombre de Usuario: <span th:text="${usuario.username}"></span></h3>
+                            <form id="estadoForm" th:action="@{/Usuarios/editarEstado/{id}(id=${usuario.id})}" method="post">
+                                <!-- Aquí el estado será 'Activo' si está marcado, 'Inactivo' si está desmarcado -->
+                                <input type="hidden" name="estado" th:value="${usuario.estado == 'Activo' ? 'Inactivo' : 'Activo'}"/>
+                                <div class="form-check form-switch form-check-reverse">
+                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse" 
+                                           th:checked="${usuario.estado == 'Activo'}" onchange="submitForm(this)">
+                                </div>
+                            </form>
+                        </div>
+                        <label class="form-check-label">Miembro desde: <span th:text="${usuario.fechaRegistro}"></span></label>
+                    </div>
+                </div>
+
+                <!-- Acordeon de Información-->
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                          Información General
+                        </button>
+                      </h2>
+                      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          
+                            <!--CUERPO DE LA INFORMACIÓN GENERAL-->
+                            <form th:action="@{/Usuarios/editar/{id}(id=${usuario.id})}" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="validationCustom01" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="nombreCompleto" th:field="${usuario.nombreCompleto}" >
+                                  </div>
+                                  <div class="col-md-4">
+                                    <label for="validationCustom02" class="form-label">Correo Eléctronico</label>
+                                    <input type="text" class="form-control" id="email" th:field="${usuario.email}" >
+                                  </div>
+                                  <div class="col-md-4">
+                                    <label for="validationCustom04" class="form-label">Rol de Usuario</label>
+                                    <select class="form-select" id="roles" th:field="*{usuario.roles}" required>
+                                        <option th:each="rol : ${roles}"
+                                                th:value="${rol.id}"
+                                                th:text="${rol.name}"
+                                                th:selected="${usuario.roles}">
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                      Please select a valid state.
+                                    </div>
+                                  </div>
+
+                                  <div class="d-grid gap-2 col-6 mx-auto">
+                                    <button class="btn btn-primary" type="submit">Guardar Información General</button>
+                                  </div>
+                                  
+                            </div>
+                        </form>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                          Información de Contacto
+                        </button>
+                      </h2>
+                      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          
+                            <!--INFORMACIÓN DE CONTACTO-->
+                            <form th:action="@{/Usuarios/editar/{id}(id=${usuario.id})}" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label for="validationCustom01" class="form-label">Dirección Principal</label>
+                                    <input type="text" class="form-control" id="validationCustom01" th:field="${usuario.direccionPrincipal}" required>
+                                    <div class="valid-feedback">
+                                      Looks good!
+                                    </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <label for="validationCustom04" class="form-label">Teléfono</label>
+                                    <input type="text" class="form-control" id="validationCustom02" th:field="${usuario.telefono}" >
+                                    <div class="invalid-feedback">
+                                      Please select a valid state.
+                                    </div>
+                                  </div>
+                                  <div class="col-md-12">
+                                    <label for="validationCustom04" class="form-label">Dirección Adicional</label>
+                                    <input type="text" class="form-control" id="validationCustom02" th:field="${usuario.direccionAlternativa}" >
+                                    <div class="invalid-feedback">
+                                      Please select a valid state.
+                                    </div>
+                                  </div>
+
+                                  <div class="d-grid gap-2 col-6 mx-auto">
+                                    <button class="btn btn-primary" type="submit">Guardar Información de Contacto</button>
+                                  </div>
+                            </div>
+                            </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>  
+    <footer th:replace="~{plantilla :: footer}"></footer>
+    <script>
+        function submitForm(checkbox) {
+            // Cambiar el valor del campo estado dependiendo del estado del checkbox
+            var estado = checkbox.checked ? 'Activo' : 'Inactivo';
+            
+            // Establecer el valor de estado en el input oculto
+            var hiddenInput = checkbox.closest('form').querySelector('input[name="estado"]');
+            hiddenInput.value = estado;
+            
+            // Enviar el formulario
+            checkbox.closest('form').submit();
+        }
+    </script>
+</body>
+</html>

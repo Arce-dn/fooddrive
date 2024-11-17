@@ -8,4 +8,7 @@ import com.fooddrive.app.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
+    void deleteById(long id);
+ // Método para buscar por username
 }
+

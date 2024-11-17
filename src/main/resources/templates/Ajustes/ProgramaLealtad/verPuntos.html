@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <!--Navegacion de la pagina Actual-->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                  <li class="breadcrumb-item"><a th:href="@{/Ajustes}">Administración del Sitio</a></li>
+                  <li class="breadcrumb-item"><a th:href="@{/ProgramaLealtad}">Programa de Lealtad</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Administración de puntos</li>
+                </ol>
+            </nav>
+
+            <!--Titulo de la Sección-->
+            <div class="px-4 py-5 my-5 text-center">
+                <h1 class="display-5 fw-bold">Administración de Puntos</h1>
+            </div>
+
+            <div class="text-center">
+                <table class="table ">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Corre Eléctronico</th>
+                            <th scope="col">Cantidad</th>
+                            <th>Fecha de Vencimiento</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="punto : ${puntos}">
+                            <td th:text="${punto.user.username}"></td>
+                            <td th:text="${punto.user.email}"></td>
+                            <td th:text="${punto.cantidad}"></td>
+                            <td th:text="${punto.fechaVencimiento}"></td>
+                            <td>
+                                <!-- Formulario para editar puntos -->
+                                <button type="button" class="btn btn-primary edit-points-btn"
+                                    th:data-id="${punto.id}"
+                                    th:data-cantidad="${punto.cantidad}"
+                                    data-bs-toggle="modal"
+                                    th:data-bs-target="|#editPointsModal-${punto.id}|">
+                                    Editar puntos
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>  
+
+    <!-- Modales para editar puntos -->
+    <div th:each="punto : ${puntos}" 
+    th:id="|editPointsModal-${punto.id}|"
+    class="modal fade" 
+    tabindex="-1" 
+    aria-labelledby="editPointsModalLabel" 
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form th:action="@{/ProgramaLealtad/Puntos/actualizar}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPointsModalLabel">Editar Puntos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- ID del punto (oculto) -->
+                    <input type="hidden" name="puntoId" th:value="${punto.id}" />
+                    
+                    <!-- Campo para editar la cantidad -->
+                    <div class="mb-3">
+                        <label for="cantidadPuntos" class="form-label">Cantidad de Puntos</label>
+                        <input type="number" class="form-control" id="cantidadPuntos" name="cantidadPuntos" 
+                            th:value="${punto.cantidad}" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

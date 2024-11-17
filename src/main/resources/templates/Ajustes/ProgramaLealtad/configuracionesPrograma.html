@@ -6,25 +6,109 @@
     <div class="wrapper">
         <aside th:replace="~{plantilla :: aside}"></aside>
         <div class="main p-3">
-            <div class="text-center">
+            <div class="text">
                 <!--Navegacion de la pagina Actual-->
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                       <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
                       <li class="breadcrumb-item"><a th:href="@{/Ajustes}">Administración del Sitio</a></li>
-                      <li class="breadcrumb-item active" aria-current="page">Configuración General del Programa</li>
+                      <li class="breadcrumb-item active" aria-current="page">Configuración General</li>
                     </ol>
                 </nav>
 
                 <!--Titulo de la Sección-->
                 <div class="px-4 py-5 my-5 text-center">
-                    <h1 class="display-5 fw-bold">Configuración General del Programa de Lealtad</h1>
+                    <h1 class="display-5 fw-bold">Programa de Lealtad</h1>
                 </div>
 
-
+                <form th:action="@{/ProgramaLealtad/actualizar}" method="post" id="configForm">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Fila con el título alineado a la izquierda y el switch a la derecha -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="fw-bold m-0">Acumulación de puntos:</h3>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="puntosActivos" name="puntosActivos"
+                                           th:checked="${configuracion.puntosActivos}" value="true" 
+                                           onchange="submitForm()">
+                                    <!-- Campo oculto para asegurarse de enviar 'false' si el checkbox está desmarcado -->
+                                    <input type="hidden" name="puntosActivos" value="false">
+                                </div>
+                            </div>
+                            <!-- Descripción alineada a la izquierda debajo del título -->
+                            <label class="d-block mt-2">Los usuarios podrán acumular puntos por sus pedidos.</label>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Fila con el título alineado a la izquierda y el switch a la derecha -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="fw-bold m-0">Creación de cupones:</h3>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="cuponesActivos" name="cuponesActivos"
+                                           th:checked="${configuracion.cuponesActivos}" value="true" 
+                                           onchange="submitForm()">
+                                    <!-- Campo oculto para asegurarse de enviar 'false' si el checkbox está desmarcado -->
+                                    <input type="hidden" name="cuponesActivos" value="false">
+                                </div>
+                            </div>
+                            <!-- Descripción alineada a la izquierda debajo del título -->
+                            <label class="d-block mt-2">Se podrán crear nuevos cupones para usuarios.</label>
+                        </div>
+                    </div>
+                </form>
+                <br>
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Fila con el título alineado a la izquierda y el switch a la derecha -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="fw-bold m-0">Administrar Puntos de Usuarios:</h3>
+                            <div class="form-check form-switch">
+                                <a th:href="@{/ProgramaLealtad/Puntos}" class="btn btn-danger">Administrar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Fila con el título alineado a la izquierda y el switch a la derecha -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="fw-bold m-0">Administrar Cupones:</h3>
+                            <div class="form-check form-switch">
+                                <a th:href="@{/ProgramaLealtad/Cupones}" class="btn btn-danger">Administrar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>  
     <footer th:replace="~{plantilla :: footer}"></footer>
+    <script>
+        // Función que enviará el formulario automáticamente cuando se cambie el estado de los switches
+        function submitForm() {
+            const form = document.getElementById('configForm');
+            const puntosActivos = document.getElementById('puntosActivos');
+            const cuponesActivos = document.getElementById('cuponesActivos');
+    
+            // Establecer el valor del checkbox a 'true' o 'false'
+            if (!puntosActivos.checked) {
+                puntosActivos.value = 'false';
+            } else {
+                puntosActivos.value = 'true';
+            }
+    
+            if (!cuponesActivos.checked) {
+                cuponesActivos.value = 'false';
+            } else {
+                cuponesActivos.value = 'true';
+            }
+    
+            // Enviar el formulario al controlador
+            form.submit();
+        }
+    </script>
 </body>
 </html>

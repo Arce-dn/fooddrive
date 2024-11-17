@@ -1,7 +1,9 @@
 package com.fooddrive.app.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -35,9 +37,12 @@ public class User  {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ProgramaLealtad programaLealtad;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Punto> puntos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cupon> cupones = new ArrayList<>();
+    
     // Constructor vacío
     public User() {
     }
@@ -102,6 +107,19 @@ public class User  {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public List<Punto> getPuntos() {
+        return puntos;
+    }
+    public void setPuntos(List<Punto> puntos) {
+        this.puntos = puntos;
+    }
+    public List<Cupon> getCupones() {
+        return cupones;
+    }
+    public void setCupones(List<Cupon> cupones) {
+        this.cupones = cupones;
     }
 
     // Getters y Setters de los nuevos atributos

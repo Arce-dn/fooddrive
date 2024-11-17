@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <!--Navegacion de la pagina Actual-->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                  <li class="breadcrumb-item"><a th:href="@{/Ajustes}">Administración del Sitio</a></li>
+                  <li class="breadcrumb-item"><a th:href="@{/ProgramaLealtad}">Programa de Lealtad</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Administración de cupones</li>
+                </ol>
+            </nav>
+
+            <!--Titulo de la Sección-->
+            <div class="px-4 py-5 my-5 text-center">
+                <h1 class="display-5 fw-bold">Gestión de Cupones</h1>
+            </div>
+
+
+            
+
+            <nav class="navbar bg-body-tertiary">
+                <div class="container-fluid">
+                  <div class="d-grid gap-2 d-md-block">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearCuponModal">
+                        Crear Cupón
+                    </button>
+                  </div>
+                  <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Buscar Usuario" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                  </form>
+                </div>
+              </nav>
+
+              <div class="text-center">
+                <table class="table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Código</th>
+                            <th>Usuario</th>
+                            <th>Descuento</th>
+                            <th>Fecha de Vencimiento</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cupon : ${cupones}">
+                            <td th:text="${cupon.codigo}"></td>
+                            <td th:text="${cupon.user.username}"></td>
+                            <td th:text="${cupon.descuento + ' %'}"></td>
+                            <td th:text="${cupon.fechaVencimiento}"></td>
+                            <td>
+                                <form th:action="@{/ProgramaLealtad/Cupones/eliminar}" method="post">
+                                    <input type="hidden" th:value="${cupon.id}" name="cuponId"/>
+                                    <button type="submit">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+              </div>
+            
+        </div>
+    </div>
+    
+    <!-- Modal crear nuevo cupon -->
+    <div class="modal fade" id="crearCuponModal" tabindex="-1" aria-labelledby="crearCuponModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="crearCuponModalLabel">Crear Nuevo Cupón</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario de creación del cupón -->
+                    <form th:action="@{/ProgramaLealtad/Cupones/crear}" method="post">
+                        <div class="mb-3">
+                            <label for="userId" class="form-label">Usuario</label>
+                            <select name="userId" id="userId" class="form-select">
+                                <option th:each="usuario : ${usuarios}" 
+                                        th:value="${usuario.id}" 
+                                        th:text="${usuario.username}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="codigo" class="form-label">Código</label>
+                            <input type="text" id="codigo" name="codigo" class="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descuento" class="form-label">Descuento (%)</label>
+                            <input type="number" id="descuento" name="descuento" class="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fechaVencimiento" class="form-label">Fecha de Vencimiento</label>
+                            <input type="date" id="fechaVencimiento" name="fechaVencimiento" class="form-control"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Crear Cupón</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

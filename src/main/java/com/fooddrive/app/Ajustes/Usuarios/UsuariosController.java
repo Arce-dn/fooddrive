@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fooddrive.app.entity.Cupon;
+import com.fooddrive.app.entity.Punto;
 import com.fooddrive.app.entity.Role;
 import com.fooddrive.app.entity.User;
 import com.fooddrive.app.seguridad.Service.RoleService;
@@ -163,8 +165,21 @@ public class UsuariosController {
         
         User usuario = optionalUsuario.get(); // Obtener el usuario del Optional
         
+        // Filtrar los puntos activos y no vencidos
+        int totalPuntos = usuario.getPuntos().stream()
+                                .filter(punto -> punto.isActivo() && punto.getFechaVencimiento().isAfter(LocalDate.now()))  // Filtra puntos activos y no vencidos
+                                .mapToInt(Punto::getCantidad)  // Suma la cantidad de puntos
+                                .sum();
+
+                                // Filtrar los cupones activos y no vencidos
+        List<Cupon> cuponesActivos = usuario.getCupones().stream()
+                                        .filter(cupon -> cupon.isActivo() && cupon.getFechaVencimiento().isAfter(LocalDate.now())) // Filtra cupones activos y no vencidos
+                                        .collect(Collectors.toList());
+
         model.addAttribute("titulo", "Información de Usuario");
+        model.addAttribute("totalPuntos", totalPuntos); 
         model.addAttribute("usuario", usuario); // Usuario existente para el formulario
+        model.addAttribute("cupones", cuponesActivos);
         model.addAttribute("roles", roleService.getAllRoles()); // Lista de roles
         return "Ajustes/Usuarios/verInformacion";
     }

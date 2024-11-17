@@ -2,11 +2,18 @@ package com.fooddrive.app.entity;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "cupones")
-public class Cupon {
+@Table(name = "puntos")
+public class Punto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,26 +24,22 @@ public class Cupon {
     private User user;
 
     @Column(nullable = false)
-    private String codigo;
+    private Integer cantidad;
 
     @Column(nullable = false)
-    private Double descuento; // Puede ser un porcentaje o un valor fijo
+    private LocalDate fechaVencimiento; // Último día del año
 
     @Column(nullable = false)
-    private LocalDate fechaVencimiento;
-
-    @Column(nullable = false)
-    private boolean activo; // Indica si el cupón está activo
+    private boolean activo; // Para desactivar puntos vencidos
 
     // Constructor vacío
-    public Cupon() {
+    public Punto() {
     }
 
     // Constructor completo
-    public Cupon(User user, String codigo, Double descuento, LocalDate fechaVencimiento, boolean activo) {
+    public Punto(User user, Integer cantidad, LocalDate fechaVencimiento, boolean activo) {
         this.user = user;
-        this.codigo = codigo;
-        this.descuento = descuento;
+        this.cantidad = cantidad;
         this.fechaVencimiento = fechaVencimiento;
         this.activo = activo;
     }
@@ -58,20 +61,12 @@ public class Cupon {
         this.user = user;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public Integer getCantidad() {
+        return cantidad;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public Double getDescuento() {
-        return descuento;
-    }
-
-    public void setDescuento(Double descuento) {
-        this.descuento = descuento;
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
     }
 
     public LocalDate getFechaVencimiento() {
@@ -90,28 +85,26 @@ public class Cupon {
         this.activo = activo;
     }
 
-    // Método para verificar si el cupón está vencido
-    public boolean estaVencido() {
+    // Método para verificar si los puntos están vencidos
+    public boolean estanVencidos() {
         return LocalDate.now().isAfter(fechaVencimiento);
     }
 
-    // Método para actualizar el estado activo según la fecha de vencimiento
+    // Método para desactivar puntos vencidos
     public void actualizarEstado() {
-        if (estaVencido()) {
+        if (estanVencidos()) {
             this.activo = false;
         }
     }
 
     @Override
     public String toString() {
-        return "Cupon{" +
+        return "Punto{" +
                 "id=" + id +
                 ", user=" + user.getUsername() +
-                ", codigo='" + codigo + '\'' +
-                ", descuento=" + descuento +
+                ", cantidad=" + cantidad +
                 ", fechaVencimiento=" + fechaVencimiento +
                 ", activo=" + activo +
                 '}';
     }
 }
-

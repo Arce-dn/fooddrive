@@ -31,7 +31,7 @@
                                            th:checked="${usuario.estado == 'Activo'}" onchange="submitForm(this)">
                                 </div>
                         </div>
-                        <label class="form-check-label">Miembro desde: <span th:text="${usuario.fechaRegistro}"></span></label>
+                        <label class="form-check-label">Puntos de Lealtad: <span class="badge rounded-pill text-bg-success" th:text="${totalPuntos}"></span> puntos | Miembro desde: <span th:text="${usuario.fechaRegistro}"></span></label>
                     </div>
                 </div>
 
@@ -99,14 +99,55 @@
                     <div class="accordion-item">
                       <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                          Pedidos Realizados
+                          Puntos y Cupones Disponibles
                         </button>
                       </h2>
                       <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                          <strong>Sección en construcción.</strong> 
+                            <!-- Contenedor de los cupones con 3 cupones por fila -->
+                            <div class="row row-cols-1 row-cols-md-3 g-4"> <!-- 1 columna en pantallas pequeñas y 3 columnas en pantallas medianas y grandes -->
+                              <div th:each="cupon, iterStat : ${cupones}">
+                                  <!-- Cada 3 cupones, crear una nueva fila -->
+                                  <div th:if="${iterStat.index % 3 == 0}" class="w-100"></div>
+                          
+                                  <!-- Columna para cada cupón -->
+                                  <div class="col">
+                                      <div class="card">
+                                          <div class="row g-0">
+                                              <!-- Lado izquierdo: Fecha de vencimiento -->
+                                              <div class="col-md-4 bg-light text-center d-flex flex-column justify-content-center">
+                                                  <div class="card-body">
+                                                      <h5 class="card-title">Fecha de Vencimiento</h5>
+                                                      <p class="card-text">
+                                                          <span th:text="${cupon.fechaVencimiento}"></span>
+                                                      </p>
+                                                  </div>
+                                              </div>
+                          
+                                              <!-- Lado derecho: Información general del cupón -->
+                                              <div class="col-md-8">
+                                                  <div class="card-body">
+                                                      <h5 class="card-title">Cupón de Descuento</h5>
+                                                      <p class="card-text">
+                                                          <strong>Código:</strong> <span th:text="${cupon.codigo}"></span>
+                                                      </p>
+                                                      <p class="card-text">
+                                                          <strong>Descuento:</strong> <span th:text="${cupon.descuento}"></span>%
+                                                      </p>
+                                                      <p class="card-text">
+                                                          <small class="text-muted">Válido hasta el <span th:text="${cupon.fechaVencimiento}"></span>.</small>
+                                                      </p>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
                         </div>
-                      </div>
+                    </div>
+
+                    
                     </div>
                   </div>
             </div>

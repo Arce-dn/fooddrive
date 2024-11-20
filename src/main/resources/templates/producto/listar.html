@@ -22,7 +22,7 @@
 
                 <nav class="navbar bg-body-tertiary">
                     <div class="container-fluid">
-                        <button class="btn btn-primary" type="submit">Registrar Nuevo Producto</button>
+                        <button class="btn btn-primary active" type="button" onclick="mostrarFormulario()" >Visualizar formulario</button>
                       <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Buscar Producto" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Buscar</button>
@@ -50,24 +50,89 @@
                         <!--<th scope="row">1</th>-->
                         <td th:text="${producto.id_producto}"></td>
                         <td th:text="${producto.imagen}"></td>
-                         <td th:text="${producto.nombre}"></td>
+                        <td th:text="${producto.nombre}"></td>
                         <td th:text="'$' + ${producto.precio}"></td>
-                        <td th:text="${producto.cantidad}"></t>
-                        <td th:text="${producto.descripcion}"></t>
-                        <td th:text="${producto.categoria.nombre}"></t>
-                        <td th:text="${producto.disponibilidad}"></t>
-                        <!--<td><span th:each="role : ${usuario.roles}" th:text="${role.name}"></span></td>
-                        <td th:text="${usuario.estado}"></td> -->
+                        <td th:text="${producto.cantidad}"></td>
+                        <td th:text="${producto.descripcion}" style="width: 200px;"></td>
+                        <td th:text="${producto.categoria.nombre}"></td>
+                        <td th:text="${producto.disponibilidad ? 'Disponible' : 'No Disponible'}" ></td>
                         <td>
-                            <a href="#" th:href="@{/edit/{id}(id=${producto.id_producto})}">Editar</a> |
-                            <a href="#" th:href="@{/delete/{id}(id=${producto.id_producto})}">Eliminar</a>
+                           <a onclick="mostrarFormulario()" th:href="@{/producto/edit/{id_producto}(id_producto=${producto.id_producto})}">Editar</a>
+                          |
+                            <!-- <a href="#" th:href="@{/edit/{id_producto}(id_producto=${producto.id_producto})}">Editar</a> | -->
+                            <a th:href="@{/producto/delete/{id_producto}(id_producto=${producto.id_producto})}">Eliminar</a>
                         </td>
                       </tr>
                     </tbody>
                   </table>
             </div>
         </div>
+        <div class="card col-md-3" id="formulario-producto">
+          <div class="card-body">
+            <div class="card-header text-center">
+              <h5>Agregar producto</span></h5>
+            </div>
+              <form id="form-venta" th:object="${nuevoProducto}" th:action="@{/producto/save}" method="post">
+                  <!-- <div class="mb-3">
+                      <label for="imagen" class="form-label">Imagen</label>
+                      <input type="text" id="imagen" class="form-control" placeholder="Ingrese URL de la imagen" required>
+                  </div> -->
+                  <input type="hidden" th:field="*{id_producto}">
+                  <div class="mb-3">
+                      <label for="producto" class="form-label">Producto</label>
+                      <input type="text" th:field="*{nombre}" id="producto" class="form-control" placeholder="Ingrese nombre del producto" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="precio" class="form-label">Precio</label>
+                      <input type="text" th:field="*{precio}" id="precio" class="form-control" placeholder="Ingrese el precio" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="cantidad" class="form-label">Cantidad</label>
+                      <input type="text" th:field="*{cantidad}" id="cantidad" class="form-control" placeholder="Ingrese la cantidad" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="descripcion">Descripción</label>
+                    <textarea th:field="*{descripcion}" id="descripcion" placeholder="Ingrese descripción" class="form-control"></textarea>
+                  </div>
+                  <div class="mb-3">
+                      <label for="categoria" class="form-label">Categoria</label>
+                      <select id="categoria" class="form-select" th:field="*{categoria}">
+                        <th:block th:each="categoria : ${categoria}">
+                          <option th:value="${categoria.id_categoria}" th:text="${categoria.nombre}"></option>
+                        </th:block>
+                      </select>
+                  </div>
+                  <div class="mb-3">
+                      <label for="disponibilidad" class="form-label">Disponibilidad</label>
+                      <select id="disponibilidad" class="form-select" th:field="*{disponibilidad}">
+                        <option th:value="true">Disponible</option>
+                        <option th:value="false">No Disponible</option>
+                    </select>
+                  </div>
+                  <div class="mt-3 d-grid gap-2">
+                      <button type="submit" class="btn btn-primary">Agregar</button>
+                      <button type="reset" class="btn btn-danger"  onclick="mostrarFormulario(), window.location.href='/producto'">Cancelar</button>
+                  </div>
+              </form>
+          </div>
+      </div>
     </div>  
     <footer th:replace="~{plantilla :: footer}"></footer>
+    
+    <style>
+      /* Ocultar el formulario al inicio */
+      #formulario-producto {
+        display: auto;
+      }
+    </style>
+    <script>
+      // Función para mostrar el formulario al hacer clic en el botón
+      function mostrarFormulario() {
+          var formulario = document.getElementById("formulario-producto");
+          formulario.style.display = (formulario.style.display === "none" || formulario.style.display === "") ? "block" : "none";
+      }
+    </script>
+    
+    
 </body>
 </html>

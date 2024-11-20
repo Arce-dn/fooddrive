@@ -18,6 +18,7 @@ public class Categoria {
 
     public Categoria(){   
     }
+    
 
     
     public Long getId_categoria() {

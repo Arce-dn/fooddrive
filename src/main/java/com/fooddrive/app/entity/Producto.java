@@ -26,7 +26,7 @@ import jakarta.persistence.Entity;
      private String descripcion;
      private boolean disponibilidad;
 
-     private Producto(){}
+     public Producto(){}
 
      @Autowired
      @ManyToOne

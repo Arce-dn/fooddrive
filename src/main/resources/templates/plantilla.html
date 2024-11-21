@@ -23,10 +23,19 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#authP" aria-expanded="false" aria-controls="auth">
                         <i class="lni lni-pizza"></i>
                         <span>Menú y Productos</span>
                     </a>
+                    <ul id="authP" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a th:href="@{/producto}" class="sidebar-link">Inventario de Productos</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Menú Diario</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">

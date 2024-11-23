@@ -19,6 +19,7 @@ import jakarta.persistence.Entity;
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
      private Long id_producto;
+     
      private byte[] imagen;
      private String nombre;
      private Double precio;
@@ -84,6 +85,17 @@ import jakarta.persistence.Entity;
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    private String imagenBase64;
+
+    // Getters y setters
+    public String getImagenBase64() {
+        return imagenBase64;
+    }
+
+    public void setImagenBase64(String imagenBase64) {
+        this.imagenBase64 = imagenBase64;
     }
 
     @Override

@@ -1,138 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head th:replace="~{plantilla :: head}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="wrapper">
         <aside th:replace="~{plantilla :: aside}"></aside>
         <div class="main p-3">
             <div class="text-center">
-                <!--Navegacion de la pagina Actual-->
+                <!-- Navegación de la página Actual -->
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
-                      <li class="breadcrumb-item active" aria-current="page">Gestión de Productos</li>
+                        <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Gestión de Productos</li>
                     </ol>
                 </nav>
 
-                <!--Titulo de la Sección-->
+                <!-- Título de la Sección -->
                 <div class="px-4 py-5 my-5 text-center">
                     <h1 class="display-5 fw-bold">Gestión de Productos</h1>
                 </div>
 
-                <nav class="navbar bg-body-tertiary">
+                <!-- <nav class="navbar bg-body-tertiary">
                     <div class="container-fluid">
-                        <button class="btn btn-primary active" type="button" onclick="mostrarFormulario()" >Visualizar formulario</button>
-                      <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Buscar Producto" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Buscar</button>
-                      </form>
+                        <button 
+                            class="btn btn-primary" 
+                            type="button" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#formularioProductoModal">
+                            Agregar producto
+                        </button>
+                        <button 
+                            class="btn btn-secondary" 
+                            type="button">
+                            Agregar producto
+                        </button>
+                        <form class="d-flex" role="search">
+                            <input class="form-control me-2" type="search" placeholder="Buscar Producto" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Buscar</button>
+                        </form>
+                      </div>
+                  </nav> -->
+                  <nav class="navbar bg-body-tertiary">
+                    <div class="container-fluid">
+                        <div class="d-flex gap-2">
+                            <button 
+                                class="btn btn-primary" 
+                                type="button" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#formularioProductoModal">
+                                Agregar producto
+                            </button>
+                            <button 
+                                class="btn btn-secondary" 
+                                type="button"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#formularioProductoModal02">
+                                Agregar categoria
+                            </button>
+                        </div>
+                        <form class="d-flex ms-auto" role="search">
+                            <input class="form-control me-2" type="search" placeholder="Buscar Producto" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Buscar</button>
+                        </form>
                     </div>
-                  </nav>
+                </nav>
+                
 
-                <!-- Tabla de datos-->
+                <!-- Tabla de datos -->
                 <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Codigo</th>
-                        <th scope="col">Imagen</th>
-                        <th scope="col">Producto</th>
-                        <th scope="col">precio</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Descripcion</th>
-                        <th scope="col">Categoria</th>
-                        <th scope="col">Disponibilidad</th>
-                        <th scope="col">Acciones</th>
-                      </tr>
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Imagen</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Disponibilidad</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
                     </thead>
                     <tbody>
-                      <tr th:each="producto : ${producto}">
-                        <!--<th scope="row">1</th>-->
-                        <td th:text="${producto.id_producto}"></td>
-                        <td th:text="${producto.imagen}"></td>
-                        <td th:text="${producto.nombre}"></td>
-                        <td th:text="'$' + ${producto.precio}"></td>
-                        <td th:text="${producto.cantidad}"></td>
-                        <td th:text="${producto.descripcion}" style="width: 200px;"></td>
-                        <td th:text="${producto.categoria.nombre}"></td>
-                        <td th:text="${producto.disponibilidad ? 'Disponible' : 'No Disponible'}" ></td>
-                        <td>
-                           <a onclick="mostrarFormulario()" th:href="@{/producto/edit/{id_producto}(id_producto=${producto.id_producto})}">Editar</a>
-                          |
-                            <!-- <a href="#" th:href="@{/edit/{id_producto}(id_producto=${producto.id_producto})}">Editar</a> | -->
-                            <a th:href="@{/producto/delete/{id_producto}(id_producto=${producto.id_producto})}">Eliminar</a>
-                        </td>
-                      </tr>
+                        <tr th:each="producto : ${producto}">
+                            <td th:text="${producto.id_producto}"></td>
+                            <!-- <td th:text="${producto.imagen}"></td> -->
+                            <td>
+                                <img th:src="'data:image/jpeg;base64,' + ${producto.imagenBase64}" alt="Imagen del producto" style="width: 100px; height: 100px;" />
+                            </td>
+                            <td th:text="${producto.nombre}"></td>
+                            <td th:text="'$' + ${producto.precio}"></td>
+                            <td th:text="${producto.cantidad}"></td>
+                            <td th:text="${producto.descripcion}" style="width: 200px;"></td>
+                            <td th:text="${producto.categoria.nombre}"></td>
+                            <td th:text="${producto.disponibilidad ? 'Disponible' : 'No Disponible'}"></td>
+                            <td>
+                                <!-- <button type="button" class="btn btn-success"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#formularioProductoModal" 
+                                th:href="@{/producto/edit/{id_producto}(id_producto=${producto.id_producto})}">Editar</button> | -->
+                                <button 
+                                    class="btn btn-warning editar-btn" 
+                                    type="button" 
+                                    th:attr="data-id=${producto.id_producto}">
+                                    Editar
+                                </button>  |
+                                <!-- <button type="button" class="btn btn-danger" 
+                                th:href="@{/producto/delete/{id_producto}(id_producto=${producto.id_producto})}">Eliminar</button> -->
+                                <button 
+                                class="btn btn-danger eliminar-btn" 
+                                th:attr="data-idd=${producto.id_producto}">
+                                Eliminar
+                                </button>
+                            </td>
+                        </tr>
                     </tbody>
-                  </table>
+                </table>
             </div>
         </div>
-        <div class="card col-md-3" id="formulario-producto">
-          <div class="card-body">
-            <div class="card-header text-center">
-              <h5>Agregar producto</span></h5>
-            </div>
-              <form id="form-venta" th:object="${nuevoProducto}" th:action="@{/producto/save}" method="post">
-                  <!-- <div class="mb-3">
-                      <label for="imagen" class="form-label">Imagen</label>
-                      <input type="text" id="imagen" class="form-control" placeholder="Ingrese URL de la imagen" required>
-                  </div> -->
-                  <input type="hidden" th:field="*{id_producto}">
-                  <div class="mb-3">
-                      <label for="producto" class="form-label">Producto</label>
-                      <input type="text" th:field="*{nombre}" id="producto" class="form-control" placeholder="Ingrese nombre del producto" required>
-                  </div>
-                  <div class="mb-3">
-                      <label for="precio" class="form-label">Precio</label>
-                      <input type="text" th:field="*{precio}" id="precio" class="form-control" placeholder="Ingrese el precio" required>
-                  </div>
-                  <div class="mb-3">
-                      <label for="cantidad" class="form-label">Cantidad</label>
-                      <input type="text" th:field="*{cantidad}" id="cantidad" class="form-control" placeholder="Ingrese la cantidad" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="descripcion">Descripción</label>
-                    <textarea th:field="*{descripcion}" id="descripcion" placeholder="Ingrese descripción" class="form-control"></textarea>
-                  </div>
-                  <div class="mb-3">
-                      <label for="categoria" class="form-label">Categoria</label>
-                      <select id="categoria" class="form-select" th:field="*{categoria}">
-                        <th:block th:each="categoria : ${categoria}">
-                          <option th:value="${categoria.id_categoria}" th:text="${categoria.nombre}"></option>
-                        </th:block>
-                      </select>
-                  </div>
-                  <div class="mb-3">
-                      <label for="disponibilidad" class="form-label">Disponibilidad</label>
-                      <select id="disponibilidad" class="form-select" th:field="*{disponibilidad}">
-                        <option th:value="true">Disponible</option>
-                        <option th:value="false">No Disponible</option>
-                    </select>
-                  </div>
-                  <div class="mt-3 d-grid gap-2">
-                      <button type="submit" class="btn btn-primary">Agregar</button>
-                      <button type="reset" class="btn btn-danger"  onclick="mostrarFormulario(), window.location.href='/producto'">Cancelar</button>
-                  </div>
-              </form>
+    </div>
+
+    <!-- Modal del Formulario -->
+    <div class="modal fade" id="formularioProductoModal" tabindex="-1" aria-labelledby="formularioProductoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="formularioProductoModalLabel">Agregar Producto</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form id="form-venta" th:object="${nuevoProducto}" th:action="@{/producto/save}" method="post">
+                      <input type="hidden" th:field="*{id_producto}">
+                      <div class="mb-3">
+                        <label for="imagen" class="form-label">Imagen del Producto</label>
+                        <input type="file" th:field="*{imagen}" id="imagen" class="form-control" accept="image/*" onchange="previewImage(event)" required>
+                        <!-- Espacio para la vista previa -->
+                        <div class="mt-3">
+                            <img id="preview" src="" alt="Vista previa de la imagen" class="img-thumbnail" style="max-width: 150px; max-height: 150px; display: none;">
+                        </div>
+                    </div>
+                      <div class="mb-3">
+                          <label for="producto" class="form-label">Producto</label>
+                          <input type="text" th:field="*{nombre}" id="producto" class="form-control" placeholder="Ingrese nombre del producto" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="precio" class="form-label">Precio</label>
+                          <input type="text" th:field="*{precio}" id="precio" class="form-control" placeholder="Ingrese el precio" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="cantidad" class="form-label">Cantidad</label>
+                          <input type="text" th:field="*{cantidad}" id="cantidad" class="form-control" placeholder="Ingrese la cantidad" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="descripcion">Descripción</label>
+                          <textarea th:field="*{descripcion}" id="descripcion" placeholder="Ingrese descripción" class="form-control"></textarea>
+                      </div>
+                      <div class="mb-3">
+                          <label for="categoria" class="form-label">Categoría</label>
+                          <select id="categoria" class="form-select" th:field="*{categoria}">
+                              <th:block th:each="categoria : ${categoria}">
+                                  <option th:value="${categoria.id_categoria}" th:text="${categoria.nombre}"></option>
+                              </th:block>
+                          </select>
+                      </div>
+                      <div class="mb-3">
+                          <label for="disponibilidad" class="form-label">Disponibilidad</label>
+                          <select id="disponibilidad" class="form-select" th:field="*{disponibilidad}">
+                              <option th:value="true">Disponible</option>
+                              <option th:value="false">No Disponible</option>
+                          </select>
+                      </div>
+                      <div class="mt-3 d-grid gap-2">
+                        <div class="d-flex gap-2 mx-auto">
+                          <button type="submit" class="btn btn-primary">Agregar</button>
+                          <button type="reset" class="btn btn-danger" data-bs-dismiss="modal" window.location.href='/producto'>Cancelar</button>
+                        </div>
+                      </div>
+                  </form>
+              </div>
           </div>
       </div>
-    </div>  
-    <footer th:replace="~{plantilla :: footer}"></footer>
-    
-    <style>
-      /* Ocultar el formulario al inicio */
-      #formulario-producto {
-        display: auto;
-      }
-    </style>
+  </div>
+
+  <div class="modal fade" id="formularioProductoModal02" tabindex="-1" aria-labelledby="formularioProductoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formularioProductoModalLabel">Agregar categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-venta" th:object="${nuevoProducto}" th:action="@{/producto/categoria/save}" method="post">
+                    <div class="mb-3">
+                        <label for="producto" class="form-label">categoria</label>
+                        <input type="text" th:field="*{nombre}" id="categoria" class="form-control" placeholder="Ingrese nombre de categoria" required>
+                    </div>
+                    <div class="mt-3 d-grid gap-2">
+                      <div class="d-flex gap-2 mx-auto">
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                        <button type="reset" class="btn btn-danger" data-bs-dismiss="modal" window.location.href='/producto'>Cancelar</button>
+                      </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // Función para mostrar el formulario al hacer clic en el botón
-      function mostrarFormulario() {
-          var formulario = document.getElementById("formulario-producto");
-          formulario.style.display = (formulario.style.display === "none" || formulario.style.display === "") ? "block" : "none";
-      }
-    </script>
-    
-    
+      document.addEventListener("DOMContentLoaded", function () {
+          const botonesEditar = document.querySelectorAll(".editar-btn");
+  
+          botonesEditar.forEach(boton => {
+              boton.addEventListener("click", function () {
+                  const idProducto = boton.getAttribute("data-id");
+                  // Redirige a la URL de edición con el ID
+                  window.location.href = `/producto/editar/${idProducto}`;
+              });
+          });
+      });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const botonesEditar = document.querySelectorAll(".eliminar-btn");
+
+        botonesEditar.forEach(boton => {
+            boton.addEventListener("click", function () {
+                const idProducto = boton.getAttribute("data-idd");
+                // Redirige a la URL de edición con el ID
+                window.location.href = `/producto/delete/${idProducto}`;
+            });
+        });
+    });
+  </script>
+  <script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('preview');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result; // Asigna la URL de la imagen al elemento <img>
+                preview.style.display = 'block'; // Muestra la vista previa
+            };
+            reader.readAsDataURL(input.files[0]); // Lee el archivo como Data URL
+        } else {
+            preview.src = ''; // Limpia la vista previa si no hay archivo seleccionado
+            preview.style.display = 'none'; // Oculta la vista previa
+        }
+    }
+</script>
 </body>
 </html>
+

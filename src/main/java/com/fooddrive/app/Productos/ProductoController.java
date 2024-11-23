@@ -13,6 +13,7 @@ import com.fooddrive.app.Productos.Service.CategoriaService;
 import com.fooddrive.app.Productos.Service.ProductoService;
 import com.fooddrive.app.entity.Categoria;
 import com.fooddrive.app.entity.Producto;
+import java.util.Base64;
 
 @Controller
 public class ProductoController {
@@ -32,6 +33,19 @@ public class ProductoController {
         // Creación de un nuevo producto para el formulario
         Producto nuevoProducto = new Producto();
         model.addAttribute("nuevoProducto", nuevoProducto);
+        Categoria nuevaCategoria = new Categoria();
+        model.addAttribute("nuevaCategoria", nuevaCategoria);
+
+        for (Producto producto : listadoProducto) {
+            if (producto.getImagen() != null) {
+                try {
+                    String base64Image = Base64.getEncoder().encodeToString(producto.getImagen());
+                    producto.setImagenBase64(base64Image); // Campo extra para pasar a la vista
+                } catch (Exception e) {
+                    System.out.println("Error al convertir la imagen a Base64: " + e.getMessage());
+                }
+            }
+        }
 
         // Lista de categorías para el campo de selección en el formulario
         List<Categoria> listaCategoria = categoriaService.ListaCategoria();
@@ -46,9 +60,20 @@ public class ProductoController {
         productoService.guardar(producto);
         return "redirect:/producto";  // Redirigir a la página de listado después de guardar
     }
+    @PostMapping("/producto/categoria/save")
+    public String guardar(Categoria categoria){
+        categoriaService.guardar(categoria);
+        return "redirect:/producto";
+    }
 
-    @GetMapping("/producto/edit/{id_producto}") 
+    @GetMapping("/producto/editar/{id_producto}") 
     public String editar(@PathVariable("id_producto") Long idProducto, Model model) {
+
+        if (productoService == null) {
+            // Manejar el caso donde el usuario no exista
+            model.addAttribute("error", "El usuario no existe.");
+            return "redirect:/producto";
+        }
         // Obtener el producto por ID y cargar la lista de categorías
         Producto editarProducto = productoService.buscarPorId(idProducto);
         
@@ -62,38 +87,11 @@ public class ProductoController {
         model.addAttribute("nuevoProducto", editarProducto);  // Se usa el mismo nombre del formulario
         model.addAttribute("producto", listadoProducto);
         model.addAttribute("categoria", listaCategoria);
-        return "/producto/listar";  // Mostrar la misma vista con el formulario de edición
+        return "producto/editarProducto";  // Mostrar la misma vista con el formulario de edición
     }
     @GetMapping("/producto/delete/{id_producto}") 
     public String eliminar(@PathVariable("id_producto") Long idProducto, Model model) {
         productoService.eliminar(idProducto);
         return "redirect:/producto";  // Mostrar la misma vista con el formulario de edición
     }
-
-    // @GetMapping("/producto")
-    // public String listarProducto(Model model){
-    //     List<Producto> ListadoProducto = productoService.listarTodos();
-    //     model.addAttribute("titulo", "Lista de Producto");
-    //     model.addAttribute("producto", ListadoProducto);
-
-    //     Producto productoo = new Producto();
-    //     List<Categoria> listaCategoria = categoriaService.ListaCategoria();
-    //     model.addAttribute("titulo", "Formulario: nuevo categoria" );
-    //     model.addAttribute("productoo", productoo);
-    //     model.addAttribute("categoria", listaCategoria);
-
-    //     return "/producto/listar";
-    // }
-
-    //  @PostMapping("/producto/{id_producto}") 
-    //  public String editar(@PathVariable("id_producto") Long idProducto, Model model){
-
-    //      Producto editarProducto = productoService.buscarPorId(idProducto);
-    //      List<Categoria> listaCategoria = categoriaService.ListaCategoria();
-
-    //      model.addAttribute("titulo", "Formulario: editar producto" );
-    //      model.addAttribute("editarProducto", editarProducto);
-    //      model.addAttribute("categoria", listaCategoria);
-    //      return "redirect:/producto";
-    //  }
 }

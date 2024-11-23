@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.fooddrive.app.Productos.Repository.CategoriaRepository;
 import com.fooddrive.app.entity.Categoria;
 
+
 @Service
 public class CategoriaServiceimpl implements CategoriaService{
     
@@ -19,4 +20,9 @@ public class CategoriaServiceimpl implements CategoriaService{
         
         return (List<Categoria>) categoriaRepository.findAll();
     }
+    @Override
+	public void guardar(Categoria categoria) {
+		categoriaRepository.save(categoria);
+
+	}
 }

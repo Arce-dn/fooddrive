@@ -5,6 +5,7 @@ import java.util.List;
 import com.fooddrive.app.entity.Categoria;
 
 public interface CategoriaService {
-
+    
     List<Categoria> ListaCategoria();
+    public void guardar(Categoria categoria);
 }

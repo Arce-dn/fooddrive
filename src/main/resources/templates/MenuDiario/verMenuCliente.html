@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{plantilla :: head}">
+</head>
+
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center">
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Menu del dia</li>
+                    </ol>
+                </nav>
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Menu del dia</h1>
+                    <h1 class="display-10 fw-bold" th:text="${mensaje}"></h1>
+                </div>
+
+                <!--Tarjetas de productos en menu-->
+                <span th:each="category : ${categoria}">
+                    <h1 class="card-title" th:text="${category.nombre}"></h1>
+
+                    <div class="card-group row row-cols-1 row-cols-md-4 g-4">
+                        <div th:each="detalle : ${detallesMenu}" th:if="${detalle.producto.categoria.nombre == category.nombre}" class="col">
+                            <div class="card" style="width: 100%;">
+                                <div style="text-align: center;">
+                                    <img th:src="@{/images/Ajustes/usuarios.png}" class="card-img-top" alt="..."
+                                        style="width: 50%; height: auto;">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${detalle.producto.nombre}"></h5>
+                                    <p class="card-text" th:text="${detalle.producto.descripcion}"></p>
+                                    <h5 class="card-title" th:text="'$' + ${detalle.producto.precio}"></h5>
+                                    <form id="agregaAlCarrito" th:action="@{/Inicio}" method="get"
+                                        style="display:inline;">
+                                        <button type="submit" class="btn btn-success">+</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </span>
+            </div>
+            <!--Tabla de productos abajo (POSIBLE QUITAR)-->
+            <table class="table">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr th:each="detalle : ${detallesMenu}">
+                        <td th:text="${detalle.producto.imagen}"></td>
+                        <td th:text="${detalle.producto.nombre}"></td>
+                        <td th:text="'$' + ${detalle.producto.precio}"></td>
+                        <td th:text="${detalle.producto.descripcion}" style="width: 200px;"></td>
+                        <td>
+                            <form id="agregaAlCarrito" th:action="@{/Inicio}" method="get" style="display:inline;">
+                                <button type="submit" class="btn btn-success">+</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

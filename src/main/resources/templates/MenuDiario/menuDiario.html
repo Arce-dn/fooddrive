@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{plantilla :: head}">
+</head>
+
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center">
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Gestión de Menu Diario</li>
+                    </ol>
+                </nav>
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Gestión de Menu Diario</h1>
+                </div>
+                <!--Tabla de con los productos para agregarlos o quitarlos del menu diario-->
+                <table class="table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Imagen</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Descripcion</th>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="producto : ${productos}">
+                            <!--<th scope="row">1</th>-->
+                            <td th:text="${producto.id_producto}"></td>
+                            <td th:text="${producto.imagen}"></td>
+                            <td th:text="${producto.nombre}"></td>
+                            <td th:text="'$' + ${producto.precio}"></td>
+                            <td th:text="${producto.cantidad}"></td>
+                            <td th:text="${producto.descripcion}" style="width: 200px;"></td>
+                            <td th:text="${producto.categoria.nombre}"></td>
+                            <td>
+                                <form id="agregar"
+                                    th:action="@{/MenuDiario/agregar/{idMenu}/{id}(idMenu=${menuId}, id=${producto.id_producto})}"
+                                    method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Agregar">+</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:each="detalle : ${productosMenu}">
+                            <td th:text="${detalle.producto.id_producto}"></td>
+                            <td th:text="${detalle.producto.imagen}"></td>
+                            <td th:text="${detalle.producto.nombre}"></td>
+                            <td th:text="'$' + ${detalle.producto.precio}"></td>
+                            <td th:text="${detalle.producto.cantidad}"></td>
+                            <td th:text="${detalle.producto.descripcion}" style="width: 200px;"></td>
+                            <td th:text="${detalle.producto.categoria.nombre}"></td>
+                            <td>
+                                <form id="quitar" th:action="@{/MenuDiario/quitar/{id}(id=${detalle.id})}" method="post"
+                                    style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">-</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+
+</html>

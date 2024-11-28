@@ -7,7 +7,7 @@
 <body>
     <div class="wrapper">
         <aside th:replace="~{plantilla :: aside}"></aside>
-        <div class="main p-3">
+        <div class="main p-3" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
             <div class="text-center">
                 <!--Navegacion de la pagina Actual-->
                 <nav aria-label="breadcrumb">
@@ -26,19 +26,15 @@
                 <span th:each="category : ${categoria}">
                     <h1 class="card-title" th:text="${category.nombre}"></h1>
 
-                    <div class="card-group row row-cols-1 row-cols-md-4 g-4">
+                    <div class="card-group row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4">
                         <div th:each="detalle : ${detallesMenu}" th:if="${detalle.producto.categoria.nombre == category.nombre}" class="col">
-                            <div class="card" style="width: 100%;">
-                                <div style="text-align: center;">
-                                    <img th:src="@{/images/Ajustes/usuarios.png}" class="card-img-top" alt="..."
-                                        style="width: 50%; height: auto;">
-                                </div>
-                                <div class="card-body">
+                            <div class="card d-flex flex-column" style="width: 100%; height: 100%;">
+                                <img th:src="'data:image/png;base64,' + ${detalle.producto.imagenBase64}" class="card-img-top" alt="...">
+                                <div class="card-body d-flex flex-column">
                                     <h5 class="card-title" th:text="${detalle.producto.nombre}"></h5>
                                     <p class="card-text" th:text="${detalle.producto.descripcion}"></p>
                                     <h5 class="card-title" th:text="'$' + ${detalle.producto.precio}"></h5>
-                                    <form id="agregaAlCarrito" th:action="@{/Inicio}" method="get"
-                                        style="display:inline;">
+                                    <form id="agregaAlCarrito" th:action="@{/Inicio}" method="get" style="display:inline;">
                                         <button type="submit" class="btn btn-success">+</button>
                                     </form>
                                 </div>
@@ -47,32 +43,7 @@
                     </div>
                 </span>
             </div>
-            <!--Tabla de productos abajo (POSIBLE QUITAR)-->
-            <table class="table">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">Imagen</th>
-                        <th scope="col">Producto</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col">Descripcion</th>
-                        <th scope="col">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <tr th:each="detalle : ${detallesMenu}">
-                        <td th:text="${detalle.producto.imagen}"></td>
-                        <td th:text="${detalle.producto.nombre}"></td>
-                        <td th:text="'$' + ${detalle.producto.precio}"></td>
-                        <td th:text="${detalle.producto.descripcion}" style="width: 200px;"></td>
-                        <td>
-                            <form id="agregaAlCarrito" th:action="@{/Inicio}" method="get" style="display:inline;">
-                                <button type="submit" class="btn btn-success">+</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            
         </div>
     </div>
     <footer th:replace="~{plantilla :: footer}"></footer>

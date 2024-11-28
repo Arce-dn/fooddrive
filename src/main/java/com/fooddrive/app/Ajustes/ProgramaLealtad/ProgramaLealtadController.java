@@ -3,6 +3,7 @@ package com.fooddrive.app.Ajustes.ProgramaLealtad;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +16,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fooddrive.app.Ajustes.ProgramaLealtad.Service.ConfiguracionProgramaService;
 import com.fooddrive.app.Ajustes.ProgramaLealtad.Service.CuponService;
 import com.fooddrive.app.Ajustes.ProgramaLealtad.Service.PuntoService;
+import com.fooddrive.app.entity.ConfiguracionPrograma;
 import com.fooddrive.app.entity.Cupon;
 import com.fooddrive.app.entity.Punto;
 import com.fooddrive.app.seguridad.Service.UserService;
 
 @Controller
 @RequestMapping("/ProgramaLealtad")
+
 public class ProgramaLealtadController {
 
     @Autowired
@@ -33,6 +36,7 @@ public class ProgramaLealtadController {
     private CuponService cuponService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Administrador')")
     public String verConfiguracion(Model model) {
         model.addAttribute("configuracion", configuracionProgramaService.obtenerConfiguracion());
         model.addAttribute("titulo", "Programa de Lealtad");
@@ -79,8 +83,17 @@ public class ProgramaLealtadController {
 
         // Crear nuevo cupón
     @PostMapping("/Cupones/crear")
-    public String crearCupon(@RequestParam Long userId, @RequestParam String codigo, @RequestParam Double descuento, 
-                             @RequestParam String fechaVencimiento) {
+    public String crearCupon(@RequestParam Long userId, @RequestParam String codigo, @RequestParam Double descuento, @RequestParam String fechaVencimiento, RedirectAttributes redirectAttributes) {
+        
+        // Obtén la configuración del programa
+        ConfiguracionPrograma configuracion = configuracionProgramaService.obtenerConfiguracion();
+
+        // Verifica si la creacion de cupones están activa
+        if (!configuracion.isCuponesActivos()) {
+            redirectAttributes.addFlashAttribute("error", "La creación de cupones está deshabilitada.");
+            return "redirect:/ProgramaLealtad/Cupones";
+        }
+
         LocalDate fechaVenc = LocalDate.parse(fechaVencimiento);
         Cupon nuevoCupon = new Cupon();
         nuevoCupon.setUser(userService.getUserById(userId));
@@ -89,6 +102,7 @@ public class ProgramaLealtadController {
         nuevoCupon.setFechaVencimiento(fechaVenc);
         nuevoCupon.setActivo(true);
         cuponService.guardarCupon(nuevoCupon);
+        redirectAttributes.addFlashAttribute("success","El cupón se ha acreditado éxitosamente.");
         return "redirect:/ProgramaLealtad/Cupones";
     }
 

@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user) {
-        Role defaultRole = roleRepository.findByName("Administrador").orElseThrow();
+        Role defaultRole = roleRepository.findByName("Cliente").orElseThrow();
         user.getRoles().add(defaultRole);
         user.setFechaRegistro(LocalDate.now());
         userService.save(user);

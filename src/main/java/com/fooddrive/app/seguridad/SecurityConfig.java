@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
@@ -37,7 +39,10 @@ public class SecurityConfig {
                 .logoutUrl("/logout")// URL de cierre de sesión
                 .logoutSuccessUrl("/login?logout") // Redirecciona después de cerrar sesión
                 .permitAll() // Permitir acceso a la URL de cierre de sesión
-            );
+            )
+            .exceptionHandling(exception -> exception
+            .accessDeniedPage("/403") // Página personalizada para error 403
+        );
         return http.build();
     }
 

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text-center" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
+                
+                <!--Navegacion de la pagina Actual-->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/Inicio}">Gestión de Ordenes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Crear Orden</li>
+                    </ol>
+                </nav>
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Creación de Orden</h1>
+                </div>
+
+                
+
+                <form action="/pedidos/guardar" method="post" th:object="${pedido}">
+                    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                
+                    <!-- Barra de búsqueda para ingresar el ID del producto -->
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                          <label for="searchProducto" class="col-form-label">Buscar Producto por ID:</label>
+                        </div>
+                        <div class="col-auto">
+                            <input class="form-control" type="text" id="searchProducto" onkeydown="buscarProductoPorId(event)" placeholder="Escribe el ID del producto" autocomplete="off">
+                        </div>
+                        <div class="col-auto">
+                          <span id="passwordHelpInline" class="form-text">
+                            Presione enter para agregar a la lista.
+                          </span>
+                        </div>
+                      </div>
+                        
+                    
+                    <br>
+                    <!-- Tabla de productos (vacía inicialmente) -->
+                    <table class="table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productosTable">
+                            <!-- Aquí se agregarán los productos dinámicamente -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Dirección de entrega -->
+                    <div class="row g-3 align-items-center justify-content-end">
+                        <div class="col-auto">
+                            <label for="direccionEntrega">Dirección de Entrega:</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="text" name="direccionEntrega" id="direccionEntrega" required>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-success" type="submit">Procesar Orden</button>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>  
+    <footer th:replace="~{plantilla :: footer}"></footer>
+    <script>
+// Función para buscar el producto por ID al presionar Enter
+function buscarProductoPorId(event) {
+    if (event.key === "Enter") {
+        var idProducto = document.getElementById('searchProducto').value;
+
+        // Si el ID está vacío, no hacemos nada
+        if (!idProducto) {
+            return;
+        }
+
+        // Realizar la solicitud AJAX para obtener el producto por ID
+        fetch('/productos/buscar/' + idProducto)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    mostrarProductoEnTabla(data); // Mostrar el producto en la tabla
+                } else {
+                    alert("Producto no encontrado.");
+                }
+            })
+            .catch(error => console.log(error));
+    }
+}
+
+// Función para mostrar el producto en la tabla
+function mostrarProductoEnTabla(producto) {
+    var tableBody = document.getElementById('productosTable');
+    
+    // Crear una nueva fila para el producto
+    var row = document.createElement('tr');
+    
+    // Columna Producto
+    var tdProducto = document.createElement('td');
+    tdProducto.innerHTML = producto.nombre;
+    row.appendChild(tdProducto);
+    
+    // Columna Precio
+    var tdPrecio = document.createElement('td');
+    tdPrecio.innerHTML = producto.precio;
+    row.appendChild(tdPrecio);
+
+    // Columna Cantidad
+    var tdCantidad = document.createElement('td');
+    tdCantidad.innerHTML = `<input type="number" name="cantidades" min="1" value="1" class="cantidadInput" oninput="actualizarSubtotal(this)">
+                            <input type="hidden" name="productos" value="${producto.id_producto}" class="productoId">`;
+    row.appendChild(tdCantidad);
+    
+    // Columna Subtotal
+    var tdSubtotal = document.createElement('td');
+    tdSubtotal.className = "subtotal"; // Para identificar la columna de subtotales
+    tdSubtotal.innerHTML = producto.precio; // Inicialmente, el subtotal es el precio del producto
+    row.appendChild(tdSubtotal);
+    
+    // Agregar la fila al final de la tabla (sin eliminar los productos anteriores)
+    tableBody.appendChild(row);
+    
+    // Actualizar el total después de agregar el nuevo producto
+    actualizarTotal();
+}
+
+// Función para actualizar el subtotal de un producto
+function actualizarSubtotal(input) {
+    var row = input.closest('tr'); // Encontrar la fila del producto
+    var precio = parseFloat(row.cells[1].textContent); // Obtener el precio del producto
+    var cantidad = parseInt(input.value); // Obtener la cantidad
+
+    // Calcular el subtotal
+    var subtotal = precio * cantidad;
+    
+    // Actualizar la columna Subtotal con el valor calculado
+    row.querySelector('.subtotal').innerHTML = subtotal;
+
+    // Actualizar el total después de modificar el subtotal
+    actualizarTotal();
+}
+
+// Función para actualizar el total de todos los productos
+function actualizarTotal() {
+    var total = 0;
+    var subtotales = document.querySelectorAll('.subtotal'); // Obtener todos los subtotales
+    
+    // Sumar todos los subtotales
+    subtotales.forEach(function(subtotal) {
+        total += parseFloat(subtotal.innerHTML) || 0; // Asegurarse de no sumar NaN
+    });
+
+    // Mostrar el total al final de la tabla
+    var totalRow = document.getElementById('totalRow');
+    
+    // Si la fila de total no existe, crearla
+    if (!totalRow) {
+        var table = document.getElementById('productosTable').parentElement; // Obtener el elemento <table>
+        totalRow = document.createElement('tr');
+        totalRow.id = 'totalRow'; // Asignar un ID para poder referenciarla
+        totalRow.innerHTML = `<td colspan="3" style="text-align: right;">Total:</td><td>${total}</td>`;
+        table.appendChild(totalRow); // Agregar la fila al final de la tabla
+    } else {
+        // Si ya existe, solo actualizamos el total
+        totalRow.querySelector('td:last-child').innerHTML = total;
+    }
+}
+    </script>
+</body>
+</html>

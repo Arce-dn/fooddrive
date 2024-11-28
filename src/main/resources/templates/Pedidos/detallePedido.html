@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
+            <!--Navegación de la página actual-->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/Inicio}">Gestión de Pedidos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Detalles</li>
+                </ol>
+            </nav>
+
+            <!-- Título de la sección -->
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold">Detalle del Pedido</h1>
+            </div>
+            <div class="container mt-5">
+        
+                <!-- Información del Pedido -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Información del Pedido</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Cliente:</strong></td>
+                                    <td th:text="${pedido.cliente.nombreCompleto}"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Fecha:</strong></td>
+                                    <td th:text="${pedido.fechaPedido}"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Dirección de Entrega:</strong></td>
+                                    <td th:text="${pedido.direccionEntrega}"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estado:</strong></td>
+                                    <td>
+                                        <span class="badge" th:class="${pedido.estado == 'Pendiente' ? 'bg-warning' : 'bg-success'}" th:text="${pedido.estado}"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total:</strong></td>
+                                    <td><strong>$</strong><span th:text="${pedido.total}"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        
+                <!-- Detalles del Pedido -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h3 class="mb-0">Detalles del Pedido</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr class="table-dark">
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="detalle : ${detalles}">
+                                        <td th:text="${detalle.producto.nombre}"></td>
+                                        <td th:text="${detalle.cantidad}"></td>
+                                        <td><strong>$</strong><span th:text="${detalle.subtotal}"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Enlace para volver a la lista de pedidos -->
+                <div class="text-center">
+                    <a th:href="@{/pedidos/lista}" class="btn btn-secondary">Volver a la lista de pedidos</a>
+                </div>
+            </div>
+        </div>
+    </div>  
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

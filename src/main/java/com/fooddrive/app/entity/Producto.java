@@ -1,8 +1,8 @@
  package com.fooddrive.app.entity;
 
- import java.util.Arrays;
+import java.util.Base64;
 
- import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.persistence.Entity;
  import jakarta.persistence.GeneratedValue;
@@ -42,6 +42,7 @@ import jakarta.persistence.Entity;
      public void setId_producto(Long id_producto) {
          this.id_producto = id_producto;
      }
+     
      public byte[] getImagen() {
          return imagen;
      }
@@ -87,22 +88,21 @@ import jakarta.persistence.Entity;
         this.categoria = categoria;
     }
 
-    private String imagenBase64;
-
     // Getters y setters
     public String getImagenBase64() {
-        return imagenBase64;
+        if (imagen == null || imagen.length == 0) {
+            return null; // Devuelve null si no hay datos
+        }
+        return Base64.getEncoder().encodeToString(imagen);
     }
 
-    public void setImagenBase64(String imagenBase64) {
-        this.imagenBase64 = imagenBase64;
-    }
 
     @Override
     public String toString() {
-        return "Producto [id_producto=" + id_producto + ", imagen=" + Arrays.toString(imagen) + ", nombre=" + nombre
-                + ", precio=" + precio + ", cantidad=" + cantidad + ", descripcion=" + descripcion + ", disponibilidad="
-                + disponibilidad + ", categoria=" + categoria + "]";
+        return "Producto [id_producto=" + id_producto + ", imagen=" + (imagen != null ? "tamaño=" + imagen.length : "sin imagen") 
+            + ", nombre=" + nombre + ", precio=" + precio + ", cantidad=" + cantidad 
+            + ", descripcion=" + descripcion + ", disponibilidad=" + disponibilidad 
+            + ", categoria=" + categoria + "]";
     }
 
  }

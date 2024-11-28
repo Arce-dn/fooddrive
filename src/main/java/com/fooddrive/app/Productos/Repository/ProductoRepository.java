@@ -9,4 +9,5 @@ import com.fooddrive.app.entity.Producto;
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Long>{
     // Optional<Producto> findByName(String nombre);
+    
 }

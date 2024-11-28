@@ -7,7 +7,7 @@
 <body>
     <div class="wrapper">
         <aside th:replace="~{plantilla :: aside}"></aside>
-        <div class="main p-3">
+        <div class="main p-3" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
             <div class="text-center">
                 <!--Navegacion de la pagina Actual-->
                 <nav aria-label="breadcrumb">
@@ -38,14 +38,17 @@
                     <tbody>
                         <tr th:each="producto : ${productos}">
                             <!--<th scope="row">1</th>-->
-                            <td th:text="${producto.id_producto}"></td>
-                            <td th:text="${producto.imagen}"></td>
-                            <td th:text="${producto.nombre}"></td>
-                            <td th:text="'$' + ${producto.precio}"></td>
-                            <td th:text="${producto.cantidad}"></td>
-                            <td th:text="${producto.descripcion}" style="width: 200px;"></td>
-                            <td th:text="${producto.categoria.nombre}"></td>
-                            <td>
+                            <td class="text-center align-middle" th:text="${producto.id_producto}"></td>
+                            <td style="width: 10%;">
+                                <img th:src="'data:image/png;base64,' + ${producto.imagenBase64}" 
+                                     alt="Imagen PNG" style="width: 100%; height: 1%;">
+                            </td>
+                            <td class="text-center align-middle" th:text="${producto.nombre}"></td>
+                            <td class="text-center align-middle" th:text="'$' + ${producto.precio}"></td>
+                            <td class="text-center align-middle" th:text="${producto.cantidad}"></td>
+                            <td class="text-center align-middle" th:text="${producto.descripcion}" style="width: 200px;"></td>
+                            <td class="text-center align-middle" th:text="${producto.categoria.nombre}"></td>
+                            <td class="text-center align-middle">
                                 <form id="agregar"
                                     th:action="@{/MenuDiario/agregar/{idMenu}/{id}(idMenu=${menuId}, id=${producto.id_producto})}"
                                     method="post" style="display:inline;">
@@ -54,14 +57,17 @@
                             </td>
                         </tr>
                         <tr th:each="detalle : ${productosMenu}">
-                            <td th:text="${detalle.producto.id_producto}"></td>
-                            <td th:text="${detalle.producto.imagen}"></td>
-                            <td th:text="${detalle.producto.nombre}"></td>
-                            <td th:text="'$' + ${detalle.producto.precio}"></td>
-                            <td th:text="${detalle.producto.cantidad}"></td>
-                            <td th:text="${detalle.producto.descripcion}" style="width: 200px;"></td>
-                            <td th:text="${detalle.producto.categoria.nombre}"></td>
-                            <td>
+                            <td class="text-center align-middle" th:text="${detalle.producto.id_producto}"></td>
+                            <td class="text-center align-middle" style="width: 10%;">
+                                <img th:src="'data:image/png;base64,' + ${detalle.producto.imagenBase64}" 
+                                     alt="Imagen PNG" style="width: 100%; height: 1%;">
+                            </td>
+                            <td class="text-center align-middle" th:text="${detalle.producto.nombre}"></td>
+                            <td class="text-center align-middle" th:text="'$' + ${detalle.producto.precio}"></td>
+                            <td class="text-center align-middle" th:text="${detalle.producto.cantidad}"></td>
+                            <td class="text-center align-middle" th:text="${detalle.producto.descripcion}" style="width: 200px;"></td>
+                            <td class="text-center align-middle" th:text="${detalle.producto.categoria.nombre}"></td>
+                            <td class="text-center align-middle">
                                 <form id="quitar" th:action="@{/MenuDiario/quitar/{id}(id=${detalle.id})}" method="post"
                                     style="display:inline;">
                                     <button type="submit" class="btn btn-danger">-</button>

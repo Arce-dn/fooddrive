@@ -5,7 +5,7 @@
 <body>
     <div class="wrapper">
         <aside th:replace="~{plantilla :: aside}"></aside>
-        <div class="main p-3">
+        <div class="main p-3" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
             <div class="text-center">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
@@ -31,9 +31,10 @@
                                 <form id="form-venta" th:object="${nuevoProducto}" th:action="@{/producto/save}" method="post">
                                     <div class="row g-3">
                                         <input type="hidden" th:field="*{id_producto}">
+                                        <input type="hidden" id="imagenBase64" name="imagenBase64">
                                         <div class="text-center mb-4">
                                             <label for="imagen" class="form-label">Imagen del Producto</label>
-                                            <input type="file" th:field="*{imagen}" id="imagen" class="form-control mx-auto" style="max-width: 300px;" accept="image/*" onchange="previewImage(event)" required>
+                                            <input type="file" id="imagen" class="form-control" accept="image/*" onchange="convertImageToBase64()" required>
                                             <!-- Espacio para la vista previa -->
                                             <div class="mt-3">
                                                 <img id="preview" src="" alt="Vista previa de la imagen" class="img-thumbnail" style="max-width: 150px; max-height: 150px; display: none;">
@@ -98,6 +99,27 @@
             } else {
                 preview.src = ''; // Limpia la vista previa si no hay archivo seleccionado
                 preview.style.display = 'none'; // Oculta la vista previa
+            }
+        }
+    </script>
+    <script>
+        function convertImageToBase64() {
+            const fileInput = document.getElementById('imagen');
+            const preview = document.getElementById('preview');
+            const base64Input = document.getElementById('imagenBase64');
+            
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // Mostrar la vista previa de la imagen
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    
+                    // Asignar el valor en base64 al campo oculto
+                    base64Input.value = event.target.result.split(',')[1]; // Guardamos solo la parte base64
+                };
+                reader.readAsDataURL(file);
             }
         }
     </script>

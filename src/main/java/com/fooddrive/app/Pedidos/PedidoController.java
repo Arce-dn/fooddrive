@@ -304,7 +304,7 @@ public class PedidoController {
     //Lista las ordenes "en preparación"
     @GetMapping("/preparacion")
     public String listarPedidosEnPreparacion(Model model) {
-        List<Pedido> pedidos = pedidoService.listarPorEstado("Pendiente"); 
+        List<Pedido> pedidos = pedidoService.listarPorEstado("En Preparación"); 
         model.addAttribute("pedidos", pedidos);
         return "/Pedidos/pedidosEnPreparacion"; 
     }

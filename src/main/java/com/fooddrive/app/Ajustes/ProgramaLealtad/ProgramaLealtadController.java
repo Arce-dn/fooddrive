@@ -36,7 +36,7 @@ public class ProgramaLealtadController {
     private CuponService cuponService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('Administrador')")
+    //@PreAuthorize("hasAuthority('Administrador')")
     public String verConfiguracion(Model model) {
         model.addAttribute("configuracion", configuracionProgramaService.obtenerConfiguracion());
         model.addAttribute("titulo", "Programa de Lealtad");

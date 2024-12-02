@@ -235,7 +235,7 @@ public class PedidoController {
         List<Pedido> pedidos = pedidoService.listarTodos();
         model.addAttribute("titulo", "Listado de Pedidos");
         model.addAttribute("pedidos", pedidos);
-        return "/Pedidos/listaPedidos";
+        return "Pedidos/listaPedidos";
     }
 
     // Método para ver el detalle de un pedido

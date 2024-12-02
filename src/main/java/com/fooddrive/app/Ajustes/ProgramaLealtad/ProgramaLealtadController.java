@@ -35,7 +35,7 @@ public class ProgramaLealtadController {
     @Autowired
     private CuponService cuponService;
 
-    @GetMapping
+    @GetMapping("")
     //@PreAuthorize("hasAuthority('Administrador')")
     public String verConfiguracion(Model model) {
         model.addAttribute("configuracion", configuracionProgramaService.obtenerConfiguracion());

@@ -53,7 +53,7 @@ public class ProductoController {
         List<Categoria> listaCategoria = categoriaService.ListaCategoria();
         model.addAttribute("categoria", listaCategoria);
     
-        return "/producto/listar";
+        return "producto/listar";
     }
 
     @PostMapping("/producto/save")

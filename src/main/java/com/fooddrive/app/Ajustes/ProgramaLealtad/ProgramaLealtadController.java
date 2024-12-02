@@ -107,8 +107,9 @@ public class ProgramaLealtadController {
     }
 
     @PostMapping("/Cupones/eliminar")
-    public String eliminarCupon(@RequestParam Long cuponId) {
+    public String eliminarCupon(@RequestParam Long cuponId,RedirectAttributes redirectAttributes) {
         cuponService.eliminarCupon(cuponId);
+        redirectAttributes.addFlashAttribute("error","El cupón se ha eliminado éxitosamente.");
         return "redirect:/ProgramaLealtad/Cupones";
     }
 }

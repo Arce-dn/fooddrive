@@ -70,29 +70,36 @@
                       <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <!--INFORMACIÓN DE CONTACTO-->
-                            <div class="row g-3">
-                                <div class="col-md-8">
-                                    <label for="validationCustom01" class="form-label">Dirección Principal</label>
-                                    <input type="text" class="form-control" id="validationCustom01" th:field="${usuario.direccionPrincipal}" readonly>
-                                    <div class="valid-feedback">
-                                      Looks good!
+                            <!--INFORMACIÓN DE CONTACTO-->
+                            <form th:action="@{/Usuarios/editarDireccion/{id}(id=${usuario.id})}" method="post">
+                              <div class="row g-3">
+                                  <div class="col-md-8">
+                                      <label for="validationCustom01" class="form-label">Dirección Principal</label>
+                                      <input type="text" class="form-control" id="validationCustom01" th:field="${usuario.direccionPrincipal}" required>
+                                      <div class="valid-feedback">
+                                        Looks good!
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div class="col-md-4">
-                                    <label for="validationCustom04" class="form-label">Teléfono</label>
-                                    <input type="text" class="form-control" id="validationCustom02" th:field="${usuario.telefono}" readonly>
-                                    <div class="invalid-feedback">
-                                      Please select a valid state.
+                                    <div class="col-md-4">
+                                      <label for="validationCustom04" class="form-label">Teléfono</label>
+                                      <input type="text" class="form-control" id="validationCustom02" th:field="${usuario.telefono}" >
+                                      <div class="invalid-feedback">
+                                        Please select a valid state.
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div class="col-md-12">
-                                    <label for="validationCustom04" class="form-label">Dirección Adicional</label>
-                                    <input type="text" class="form-control" id="validationCustom02" th:field="${usuario.direccionAlternativa}" readonly>
-                                    <div class="invalid-feedback">
-                                      Please select a valid state.
+                                    <div class="col-md-12">
+                                      <label for="validationCustom04" class="form-label">Dirección Adicional</label>
+                                      <input type="text" class="form-control" id="validationCustom02" th:field="${usuario.direccionAlternativa}" >
+                                      <div class="invalid-feedback">
+                                        Please select a valid state.
+                                      </div>
                                     </div>
-                                  </div>                        
-                            </div>
+  
+                                    <div class="d-grid gap-2 col-6 mx-auto">
+                                      <button class="btn btn-primary" type="submit">Guardar Información de Contacto</button>
+                                    </div>
+                              </div>
+                              </form>
                         </div>
                       </div>
                     </div>

@@ -299,5 +299,29 @@ public class PedidoController {
         pedidoService.guardar(pedido);
 
         return "redirect:/pedidos/lista"; // Redirigir a la lista de pedidos después de asignar el repartidor
+    } 
+    // ORDENES EN PREPARACIÓN
+    //Lista las ordenes "en preparación"
+    @GetMapping("/preparacion")
+    public String listarPedidosEnPreparacion(Model model) {
+        List<Pedido> pedidos = pedidoService.listarPorEstado("En Preparación"); 
+        model.addAttribute("pedidos", pedidos);
+        return "/Pedidos/pedidosEnPreparacion"; 
+    }
+    // Cambia el estado de las ordenes a completada
+    @PostMapping("/completar/{id}")
+    public String completarPedido(@PathVariable("id") Long id) {
+        Pedido pedido = pedidoService.buscarPorId(id);
+        pedido.setEstado("Completada"); 
+        pedidoService.guardar(pedido);
+        return "redirect:/pedidos/preparacion"; 
+    }
+    // ORDENES COMPLETADAS
+    //Lista las ordenes Completadas
+    @GetMapping("/completados")
+    public String listarPedidosCompletados(Model model) {
+        List<Pedido> pedidos = pedidoService.listarPorEstado("Completada");
+        model.addAttribute("pedidos", pedidos);
+        return "/Pedidos/pedidosCompletados"; // Asegúrate de que la ruta sea correcta
     }
 }

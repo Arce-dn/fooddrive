@@ -137,6 +137,63 @@ public class UsuariosController {
         return "redirect:/Usuarios?success=Usuario actualizado correctamente";
     }
 
+    @PostMapping("/Usuarios/editarDireccion/{id}")
+    public String editarDireccion(@PathVariable("id") Long id, @ModelAttribute("usuario") User usuarioActualizado, RedirectAttributes redirectAttributes) {
+        User usuarioExistente = userService.getUserById(id);
+        String username = usuarioExistente.getUsername();
+
+        // Actualizar campos si se reciben valores válidos (no nulos ni vacíos)
+        if (usuarioActualizado.getUsername() != null && !usuarioActualizado.getUsername().isEmpty()) {
+            usuarioExistente.setUsername(usuarioActualizado.getUsername());
+        }
+
+        if (usuarioActualizado.getPassword() != null && !usuarioActualizado.getPassword().isEmpty()) {
+            usuarioExistente.setPassword(usuarioActualizado.getPassword());
+        }
+
+        if (usuarioActualizado.getNombreCompleto() != null && !usuarioActualizado.getNombreCompleto().isEmpty()) {
+            usuarioExistente.setNombreCompleto(usuarioActualizado.getNombreCompleto());
+        }
+
+        if (usuarioActualizado.getEmail() != null && !usuarioActualizado.getEmail().isEmpty()) {
+            usuarioExistente.setEmail(usuarioActualizado.getEmail());
+        }
+
+        if (usuarioActualizado.getTelefono() != null && !usuarioActualizado.getTelefono().isEmpty()) {
+            usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
+        }
+
+        if (usuarioActualizado.getDireccionPrincipal() != null && !usuarioActualizado.getDireccionPrincipal().isEmpty()) {
+            usuarioExistente.setDireccionPrincipal(usuarioActualizado.getDireccionPrincipal());
+        }
+
+        if (usuarioActualizado.getDireccionAlternativa() != null && !usuarioActualizado.getDireccionAlternativa().isEmpty()) {
+            usuarioExistente.setDireccionAlternativa(usuarioActualizado.getDireccionAlternativa());
+        }
+
+        if (usuarioActualizado.getDisponibilidad() != null && !usuarioActualizado.getDisponibilidad().isEmpty()) {
+            usuarioExistente.setDisponibilidad(usuarioActualizado.getDisponibilidad());
+        }
+
+        if (usuarioActualizado.getEstado() != null && !usuarioActualizado.getEstado().isEmpty()) {
+            usuarioExistente.setEstado(usuarioActualizado.getEstado());
+        }
+
+        if (usuarioActualizado.getUltimaFechaAcceso() != null) {
+            usuarioExistente.setUltimaFechaAcceso(usuarioActualizado.getUltimaFechaAcceso());
+        }
+
+        // Actualizar roles si se reciben
+        if (usuarioActualizado.getRoles() != null && !usuarioActualizado.getRoles().isEmpty()) {
+            usuarioExistente.setRoles(usuarioActualizado.getRoles());
+        }
+
+        // Guardar los cambios en la base de datos
+        userService.updateUser(usuarioExistente);
+        redirectAttributes.addFlashAttribute("success", "Información de contacto actualizada.");
+        return "redirect:/Usuarios/informacion/" + username;
+    }
+
     @PostMapping("/Usuarios/editarEstado/{id}")
     public String editarEstadoUsuario(@PathVariable("id") Long id, @RequestParam("estado") String estado) {
         User usuario = userService.getUserById(id);

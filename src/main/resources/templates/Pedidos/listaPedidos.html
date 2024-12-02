@@ -55,9 +55,9 @@
                         <td th:text="${pedido.estado}"></td>
                         <td th:text="${pedido.repartidor != null ? pedido.repartidor.username : 'Sin asignar'}"></td>
                         <td>
-                            <a class="btn btn-info" th:href="@{/pedidos/detalle/{id}(id=${pedido.id})}">Detalle</a> 
-                            <a class="btn btn-danger" th:href="@{/pedidos/detalle/{id}(id=${pedido.id})}">Repartidor</a> 
-                            <a class="btn btn-warning" th:href="@{/pedidos/detalle/{id}(id=${pedido.id})}">Estado</a> 
+                            <a class="btn btn-info" th:href="@{/pedidos/detalle/{id}(id=${pedido.id})}" data-toggle="tooltip" title="Ver detalles"><i class="bi bi-eye-fill"></i></a> 
+                            <a class="btn btn-danger" th:href="@{/pedidos/asignarRepartidor/{id}(id=${pedido.id})}" data-toggle="tooltip" title="Asignar Repartidor"><i class="bi bi-bicycle"></i></a>
+                            <a class="btn btn-warning" th:href="@{/pedidos/cambiarEstado/{id}(id=${pedido.id})}" data-toggle="tooltip" title="Iniciar Preparación"><i class="bi bi-cursor-fill"></i></a>
                         </td>
                       </tr>
                     </tbody>

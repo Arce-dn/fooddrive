@@ -35,6 +35,13 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    public List<User> findByRoleAndDisponibilidad(String roleName, String disponibilidad) {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals(roleName)))
+                .filter(user -> disponibilidad.equalsIgnoreCase(user.getDisponibilidad()))
+                .toList();
+    }
+
     public void save(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);

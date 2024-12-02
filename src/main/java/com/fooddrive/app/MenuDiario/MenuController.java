@@ -16,9 +16,11 @@ import com.fooddrive.app.MenuDiario.Service.IMenuService;
 import com.fooddrive.app.Productos.Service.CategoriaService;
 import com.fooddrive.app.Productos.Service.ProductoService;
 import com.fooddrive.app.entity.Categoria;
+import com.fooddrive.app.entity.Cupon;
 import com.fooddrive.app.entity.DetalleMenu;
 import com.fooddrive.app.entity.Menu;
 import com.fooddrive.app.entity.Producto;
+import com.fooddrive.app.entity.Punto;
 import com.fooddrive.app.entity.User;
 import com.fooddrive.app.seguridad.Service.UserService;
 
@@ -105,8 +107,8 @@ public class MenuController {
     }
 
     //Vista Menu diario desde cliente
-    @GetMapping("/Menu")
-    public String verMenu(Model model) {
+    @GetMapping("/Menu/{username}")
+    public String verMenu(Model model,@PathVariable("username") String username ) {
         Menu menu = null;
         menu = menuService.buscarPorFecha(LocalDate.now()); //Si no encuentra con la fecha de hoy sera nulo
         if(menu == null){
@@ -126,11 +128,39 @@ public class MenuController {
                                          .anyMatch(detalle -> detalle.getProducto().getCategoria().getId_categoria().equals(categoria.getId_categoria())))
         .collect(Collectors.toList());
 
+
+        // Buscar el usuario por username
+        Optional<User> optionalUsuario = userService.getUserByUsername(username);
+        
+        // Verificar si el usuario existe
+        if (optionalUsuario.isEmpty()) {
+            // Manejar el caso donde el usuario no exista
+            model.addAttribute("error", "El usuario no existe.");
+            return "redirect:/Usuarios";
+        }
+        User usuario = optionalUsuario.get(); // Obtener el usuario del Optional
+        List<Cupon> cuponesActivos = usuario.getCupones().stream()
+                                        .filter(cupon -> cupon.isActivo() && cupon.getFechaVencimiento().isAfter(LocalDate.now())) // Filtra cupones activos y no vencidos
+                                        .collect(Collectors.toList());
+
+                                        String direccionUsuario = usuario.getDireccionPrincipal();
+                                        if (direccionUsuario == null || direccionUsuario.isEmpty()) {
+                                            direccionUsuario = "";
+                                        }
+        // Filtrar los puntos activos y no vencidos
+        int totalPuntos = usuario.getPuntos().stream()
+                                .filter(punto -> punto.isActivo() && punto.getFechaVencimiento().isAfter(LocalDate.now()))  // Filtra puntos activos y no vencidos
+                                .mapToInt(Punto::getCantidad)  // Suma la cantidad de puntos
+                                .sum();
         //Atributos a enviar al modelo
+        model.addAttribute("cupones", cuponesActivos);
         model.addAttribute("categoria", categoriasFiltradas);
         model.addAttribute("detallesMenu", detallesMenu);
         model.addAttribute("menuId", menu.getId());
         model.addAttribute("mensaje", "");
+        model.addAttribute("direccion", direccionUsuario);
+        model.addAttribute("totalPuntos", totalPuntos); 
+        model.addAttribute("titulo", "Menú diario");
         return "/MenuDiario/verMenuCliente";
     }
     

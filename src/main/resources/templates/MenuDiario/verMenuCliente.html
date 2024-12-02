@@ -9,20 +9,18 @@
         <aside th:replace="~{plantilla :: aside}"></aside>
         <div class="main p-3" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
             <div class="text-center">
-                <!--Navegacion de la pagina Actual-->
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Menu del dia</li>
+                        <li class="breadcrumb-item active" aria-current="page">Menú del día</li>
                     </ol>
                 </nav>
-                <!--Titulo de la Sección-->
                 <div class="px-4 py-5 my-5 text-center">
-                    <h1 class="display-5 fw-bold">Menu del dia</h1>
+                    <h1 class="display-5 fw-bold">Menú del día</h1>
                     <h1 class="display-10 fw-bold" th:text="${mensaje}"></h1>
                 </div>
 
-                <!--Tarjetas de productos en menu-->
+                <!-- Aquí va la lista de productos y categorías, no cambia -->
                 <span th:each="category : ${categoria}">
                     <h1 class="card-title" th:text="${category.nombre}"></h1>
 
@@ -34,18 +32,230 @@
                                     <h5 class="card-title" th:text="${detalle.producto.nombre}"></h5>
                                     <p class="card-text" th:text="${detalle.producto.descripcion}"></p>
                                     <h5 class="card-title" th:text="'$' + ${detalle.producto.precio}"></h5>
-                                    <form id="agregaAlCarrito" th:action="@{/Inicio}" method="get" style="display:inline;">
-                                        <button type="submit" class="btn btn-success">+</button>
-                                    </form>
+                                    <button class="btn btn-success"
+                                            th:data-id="${detalle.producto.id_producto}"
+                                            th:data-nombre="${detalle.producto.nombre}"
+                                            th:data-precio="${detalle.producto.precio}"
+                                            onclick="agregarAlCarrito(this)">
+                                        Agregar al carrito
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </span>
+
+                <!-- Botón del carrito -->
+                <div class="position-relative">
+                    <button class="btn btn-light" id="btnCarrito" style="position: relative;" data-bs-toggle="modal" data-bs-target="#carritoModal">
+                        🛒 Carrito (<span id="carritoCantidad">0</span>)
+                    </button>
+                </div>
+
+                <!-- Modal del Carrito -->
+                <div class="modal fade" id="carritoModal" tabindex="-1" aria-labelledby="carritoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="carritoModalLabel">Carrito de Compras</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form th:action="@{/pedidos/guardarCarrito}" method="post">
+                                    <!-- Lista de productos en el carrito -->
+                                    <div id="productosCarrito" class="mb-3">
+                                        <!-- Aquí se llenarán los productos con JS -->
+                                    </div>
+                                
+                                    <!-- Campo para dirección de entrega -->
+                                    <div class="mb-3">
+                                        <label for="direccionEntrega" class="form-label">Dirección de Entrega</label>
+                                        <input type="text" class="form-control" id="direccionEntrega" name="direccionEntrega" th:value="${direccion}" required>
+                                    </div>
+                                
+                                    <div class="mb-3">
+                                        <label for="cuponSelect" class="form-label">Selecciona un Cupón</label>
+                                        <select id="cuponSelect" class="form-select" onchange="aplicarDescuento()">
+                                            <option value="">-- Selecciona un cupón --</option>
+                                            <option th:each="cupon : ${cupones}" 
+                                                    th:value="${cupon.id}" 
+                                                    th:text="${cupon.codigo + ' - ' + cupon.descuento + '%'}"
+                                                    th:data-descuento="${cupon.descuento}">
+                                            </option>
+                                        </select>
+                                    </div>
+                            
+                                    <!-- Campo para ingresar puntos -->
+                                    <div class="mb-3">
+                                        <label for="puntosInput" class="form-label">Usar Puntos</label>
+                                        <input type="number" class="form-control" id="puntosInput" name="puntosUsados" value="0" 
+                                               max="${totalPuntos}" min="0" step="1" onchange="aplicarDescuentoPuntos()">
+                                        <small th:text="'Tienes un total de ' + ${totalPuntos} + ' puntos disponibles. ($0.01 por punto).'"></small>
+                                    </div>
+                                
+                                    <!-- Total con descuento -->
+                                    <div id="totalConDescuento" class="mt-3">
+                                        <strong>Total a pagar: $0.00</strong>
+                                    </div>
+                                
+                                    <!-- Campos ocultos -->
+                                    <input type="hidden" name="productos" id="productosInput">
+                                    <input type="hidden" name="cantidades" id="cantidadesInput">
+                                    <input type="hidden" id="totalDescInput" name="totaldesc" value="0.00">
+                                    <input type="hidden" id="puntosUsadosInput" name="puntosUsados" value="0"> <!-- Campo oculto -->
+                                
+                                    <!-- Botón para enviar el pedido -->
+                                    <button type="submit" class="btn btn-primary">Confirmar Pedido</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            
         </div>
     </div>
+
     <footer th:replace="~{plantilla :: footer}"></footer>
+
+    <!-- Script para manejar el carrito de compras -->
+    <script>
+    let carrito = [];
+let descuento = 0; // Variable para el descuento aplicado
+let totalPagar = 0; // Variable para el total a pagar después de aplicar descuentos y puntos
+
+// Función para agregar al carrito
+function agregarAlCarrito(button) {
+    let productoId = button.getAttribute("data-id");
+    let nombreProducto = button.getAttribute("data-nombre");
+    let precioProducto = parseFloat(button.getAttribute("data-precio")); // Convertir a float para operaciones matemáticas
+
+    // Obtener la cantidad del producto
+    let cantidadProducto = 1; // Por defecto, la cantidad es 1
+    let cantidadInput = button.closest('.card-body').querySelector('.cantidadInput');
+    if (cantidadInput) {
+        cantidadProducto = parseInt(cantidadInput.value) || 1; // Si hay un campo de cantidad, lo usamos, sino, 1
+    }
+
+    let producto = {
+        id: productoId,
+        nombre: nombreProducto,
+        precio: precioProducto,
+        cantidad: cantidadProducto
+    };
+
+    // Verificar si el producto ya está en el carrito
+    let encontrado = carrito.find(item => item.id === productoId);
+    if (encontrado) {
+        encontrado.cantidad += producto.cantidad; // Si ya está, aumentar la cantidad
+    } else {
+        carrito.push(producto); // Si no está, agregarlo al carrito
+    }
+
+    actualizarCarrito();
+}
+
+// Función para actualizar la vista del carrito
+function actualizarCarrito() {
+    let carritoDiv = document.getElementById("productosCarrito");
+    let carritoCantidad = document.getElementById("carritoCantidad");
+    let productosInput = document.getElementById("productosInput");
+    let cantidadesInput = document.getElementById("cantidadesInput");
+    let totalDescInput = document.getElementById("totalDescInput"); // Campo oculto para el total con descuento
+
+    // Limpiar el contenido del carrito
+    carritoDiv.innerHTML = '';
+
+    let productos = [];
+    let cantidades = [];
+    let total = 0;
+
+    carrito.forEach(producto => {
+        let productoHtml = `
+            <div class="mb-2">
+                <p>${producto.nombre} - $${producto.precio} x ${producto.cantidad}</p>
+            </div>
+        `;
+        carritoDiv.innerHTML += productoHtml;
+
+        // Llenar los valores para los campos ocultos
+        productos.push(producto.id);
+        cantidades.push(producto.cantidad);
+
+        total += producto.precio * producto.cantidad;
+    });
+
+    // Mostrar el total general
+    let totalHtml = `<div class="mt-3"><strong>Total: $${total.toFixed(2)}</strong></div>`;
+    carritoDiv.innerHTML += totalHtml;
+
+    // Aplicar descuento del cupón
+    let totalConDescuento = total - (total * descuento);
+
+    // Actualizar el total global para uso con puntos
+    totalPagar = totalConDescuento;
+
+    // Actualizar el campo oculto con el total con descuento
+    totalDescInput.value = totalConDescuento.toFixed(2);
+
+    // Mostrar el total con descuento
+    let descuentoDiv = document.getElementById("totalConDescuento");
+    descuentoDiv.innerHTML = `<strong>Total a pagar: $${totalConDescuento.toFixed(2)}</strong>`;
+
+    // Actualizar los campos ocultos
+    productosInput.value = productos.join(",");  // Convierte la lista a una cadena de valores separados por coma
+    cantidadesInput.value = cantidades.join(","); // Convierte la lista a una cadena de valores separados por coma
+
+    // Actualizar la cantidad en el botón
+    carritoCantidad.innerText = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);  // Sumar las cantidades
+}
+
+// Función para aplicar el descuento del cupón
+function aplicarDescuento() {
+    let cuponSelect = document.getElementById("cuponSelect");
+    let cuponId = cuponSelect.value;
+    let cupones = document.querySelectorAll("option"); // Obtener los cupones disponibles
+
+    // Verificar si se seleccionó un cupón
+    if (cuponId) {
+        // Buscar el cupon seleccionado y obtener el descuento
+        let cuponSeleccionado = Array.from(cupones).find(cupon => cupon.value === cuponId);
+        descuento = parseFloat(cuponSeleccionado.getAttribute("data-descuento")) / 100; // Descuento como porcentaje
+    } else {
+        descuento = 0; // Si no se selecciona un cupón, resetear el descuento
+    }
+
+    actualizarCarrito();
+    aplicarDescuentoPuntos(); // Recalcular puntos después del descuento
+}
+
+// Función para aplicar el descuento de puntos
+function aplicarDescuentoPuntos() {
+    let puntosInput = document.getElementById("puntosInput");
+    let puntosUsados = parseInt(puntosInput.value) || 0; // Puntos ingresados por el usuario
+    let valorPuntos = puntosUsados * 0.01; // Cada punto equivale a $0.01
+    let totalDescInput = document.getElementById("totalDescInput"); 
+
+    // Asegurarse de que no se use más del total
+    if (valorPuntos > totalPagar) {
+        puntosInput.value = Math.floor(totalPagar / 0.01); // Ajustar a los puntos disponibles para cubrir el total
+        valorPuntos = puntosInput.value * 0.01;
+    }
+
+    // Calcular el total después de aplicar puntos
+    let totalConPuntos = totalPagar - valorPuntos;
+
+    // Mostrar el total con descuento y puntos
+    let descuentoDiv = document.getElementById("totalConDescuento");
+    descuentoDiv.innerHTML = `<strong>Total a pagar: $${totalConPuntos.toFixed(2)}</strong>`;
+
+    totalDescInput.value = totalConPuntos.toFixed(2);
+    puntosUsadosInput.value = puntos;
+}
+
+
+    </script>
+    
 </body>
+
 </html>

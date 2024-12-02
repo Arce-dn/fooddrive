@@ -2,14 +2,33 @@
 <html lang="en">
 <head th:replace="~{plantilla :: head}">
 </head>
+<style>
+    /* Estilos personalizados */
+    .hero-section {
+        height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: #f8f9fa;
+    }
+    .hero-section h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #343a40;
+    }
+</style>
 <body>
     <div class="wrapper">
         <aside th:replace="~{plantilla :: aside}"></aside>
         <div class="main p-3" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
             <div class="text-center">
-                <h1>
-                    Inicio TPI-2024
-                </h1>
+                <section class="hero-section">
+                    <div>
+                        <h1>FOOD - DRIVE</h1>
+                        <p>Proyecto TPI - GT08</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>  

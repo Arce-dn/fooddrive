@@ -36,7 +36,7 @@
                             <a th:href="@{/MenuDiario}" class="sidebar-link">Gestionar Menú Diario</a>
                         </li>
                         <li class="sidebar-item">
-                            <a th:href="@{/Menu}" class="sidebar-link">Menú Diario</a>
+                            <a th:href="@{/Menu/{username}(username=${#authentication.name})}" class="sidebar-link">Menú Diario</a>
                         </li>
                     </ul>
                 </li>

@@ -130,7 +130,7 @@ public class PedidoController {
                                         @RequestParam("direccionEntrega") String direccionEntrega,
                                         @RequestParam("totaldesc") double totaldesc, // Recibir el total con descuento
                                         @RequestParam("puntosUsados") int puntosUsados, // Puntos usados
-                                        Authentication authentication) {
+                                        Authentication authentication, RedirectAttributes redirectAttributes) {
         // Obtener el cliente autenticado
         String nombreUsuario = authentication.getName();
         User cliente = userService.getUserByUsername(nombreUsuario).orElseThrow(
@@ -158,7 +158,8 @@ public class PedidoController {
             }
     
             if (puntosRestantes > 0) {
-                throw new IllegalArgumentException("El usuario no tiene suficientes puntos.");
+                redirectAttributes.addFlashAttribute("error", "No tienes suficientes puntos para realizar este pedido.");
+                return "redirect:/Menu/" + cliente.getUsername();
             }
         }
     
@@ -179,7 +180,10 @@ public class PedidoController {
             }
     
             if (producto.getCantidad() < cantidad) {
-                throw new RuntimeException("No hay suficiente inventario para el producto: " + producto.getNombre());
+                //throw new RuntimeException("No hay suficiente inventario para el producto: " + producto.getNombre());
+
+                redirectAttributes.addFlashAttribute("error", "1 o más productos no se encuentran disponibles.");
+                return "redirect:/Menu/" + cliente.getUsername();
             }
     
             double subtotal = producto.getPrecio() * cantidad;
@@ -227,8 +231,8 @@ public class PedidoController {
     
         // Guardar pedido
         pedidoService.guardar(pedido);
-    
-        return "redirect:/MenuDiario";
+        redirectAttributes.addFlashAttribute("success", "Orden Realizada con éxito.");
+        return "redirect:/Menu/" + cliente.getUsername();
     }
 
     @GetMapping("/lista")

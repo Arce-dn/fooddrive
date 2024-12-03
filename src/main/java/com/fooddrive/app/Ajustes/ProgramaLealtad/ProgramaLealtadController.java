@@ -22,8 +22,6 @@ import com.fooddrive.app.entity.Punto;
 import com.fooddrive.app.seguridad.Service.UserService;
 
 @Controller
-@RequestMapping("/ProgramaLealtad")
-
 public class ProgramaLealtadController {
 
     @Autowired
@@ -35,12 +33,12 @@ public class ProgramaLealtadController {
     @Autowired
     private CuponService cuponService;
 
-    @GetMapping()
+    @GetMapping("/ProgramaLealtad")
     @PreAuthorize("hasAuthority('Administrador')")
     public String verConfiguracion(Model model) {
         model.addAttribute("configuracion", configuracionProgramaService.obtenerConfiguracion());
         model.addAttribute("titulo", "Programa de Lealtad");
-        return "Ajustes/Ajustes";
+        return "Ajustes/ProgramaLealtad/configuracionesPrograma";
     }
 
     @PostMapping("/actualizar")

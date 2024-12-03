@@ -63,7 +63,7 @@
                 </li>
                 
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a th:href="@{/pedidos/Ordenes/{username}(username=${#authentication.name})}" class="sidebar-link">
                         <i class="lni lni-popup"></i>
                         <span>Mis Ordenes</span>
                     </a>

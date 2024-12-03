@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside th:replace="~{plantilla :: aside}"></aside>
+        <div class="main p-3">
+            <div class="text" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Mis Ordenes</li>
+                    </ol>
+                </nav>
+    
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Ordenes</h1>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Fila con el título alineado a la izquierda y el switch a la derecha -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="fw-bold m-0">Repartidor Activo:</h3>
+                            <div class="form-check form-switch">
+                                <form th:action="@{'/pedidos/Activar/' + ${username}}" th:if="${usuario.disponibilidad == 'No Disponible'}" method="post">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="checkbox" 
+                                        id="puntosActivos" 
+                                        name="puntosActivos" 
+                                        onchange="this.form.submit()" 
+                                        value="true">
+                                    <label class="form-check-label" for="puntosActivos"></label>
+                                </form>
+                            
+                                <form th:action="@{'/pedidos/Desactivar/' + ${username}}" th:if="${usuario.disponibilidad == 'Disponible'}" method="post">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="checkbox" 
+                                        id="puntosActivos" 
+                                        name="puntosActivos" 
+                                        checked 
+                                        onchange="this.form.submit()" 
+                                        value="false">
+                                    <label class="form-check-label" for="puntosActivos"></label>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Descripción alineada a la izquierda debajo del título -->
+                        <label class="d-block mt-2">Permitir reciber ordenes para entregar.</label>
+                    </div>
+                </div>
+
+                <div class="container mt-4">
+                    
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        <div class="col" th:each="pedido : ${pedidos}">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pedido ID: <span th:text="${pedido.id}"></span></h5>
+                                    <p class="card-text"><strong>Fecha:</strong> <span th:text="${pedido.fechaPedido}"></span></p>
+                                    <p class="card-text"><strong>Estado:</strong> <span th:text="${pedido.estado}"></span></p>
+                                    <p class="card-text"><strong>Total:</strong> $<span th:text="${pedido.total}"></span></p>
+                                    <p class="card-text"><strong>Dirección:</strong> <span th:text="${pedido.direccionEntrega}"></span></p>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <form th:action="@{/pedidos/finalizar/{id}(id=${pedido.id})}" method="post">
+                                        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                                        <input type="hidden" name="username" th:value="${username}" />
+                                        <button type="submit" class="btn btn-success" style="display: block; margin: 0 auto;"><small>Finalizar Pedido</small></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

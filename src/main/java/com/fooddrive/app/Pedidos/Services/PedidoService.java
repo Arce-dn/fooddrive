@@ -14,5 +14,6 @@ public interface PedidoService {
     void eliminar(Long id);
     List<Pedido> listarPorCliente(User cliente);
     List<Pedido> listarPorEstado(String estado);
+    List<Pedido> listarPorRepartidor(User repartidor);
 }
 

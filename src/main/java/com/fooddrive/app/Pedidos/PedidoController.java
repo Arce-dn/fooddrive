@@ -3,6 +3,7 @@ package com.fooddrive.app.Pedidos;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -305,23 +306,132 @@ public class PedidoController {
     @GetMapping("/preparacion")
     public String listarPedidosEnPreparacion(Model model) {
         List<Pedido> pedidos = pedidoService.listarPorEstado("En Preparación"); 
+        model.addAttribute("titulo", "Ordenes en preparación");
         model.addAttribute("pedidos", pedidos);
-        return "/Pedidos/pedidosEnPreparacion"; 
+        return "Pedidos/pedidosEnPreparacion"; 
     }
     // Cambia el estado de las ordenes a completada
     @PostMapping("/completar/{id}")
     public String completarPedido(@PathVariable("id") Long id) {
         Pedido pedido = pedidoService.buscarPorId(id);
-        pedido.setEstado("Completada"); 
+        pedido.setEstado("Lista"); 
         pedidoService.guardar(pedido);
         return "redirect:/pedidos/preparacion"; 
     }
+    @PostMapping("/finalizar/{id}")
+    public String finalizarPedido(@PathVariable("id") Long id, @RequestParam("username") String username, Model model) {
+        Pedido pedido = pedidoService.buscarPorId(id);
+        pedido.setEstado("Entregado");
+        pedidoService.guardar(pedido);
+
+        // Buscar el usuario por username
+        Optional<User> optionalUsuario = userService.getUserByUsername(username);
+        
+        // Verificar si el usuario existe
+        if (optionalUsuario.isEmpty()) {
+            // Manejar el caso donde el usuario no exista
+            model.addAttribute("error", "El usuario no existe.");
+            return "redirect:/Usuarios";
+        }
+        
+        User usuario = optionalUsuario.get(); // Obtener el usuario del Optional
+        usuario.setDisponibilidad("Disponible");
+        userService.updateUser(usuario);
+        return "redirect:/pedidos/Ordenes/" + username; // Redirigir a las órdenes del repartidor
+    }
+
     // ORDENES COMPLETADAS
     //Lista las ordenes Completadas
     @GetMapping("/completados")
     public String listarPedidosCompletados(Model model) {
-        List<Pedido> pedidos = pedidoService.listarPorEstado("Completada");
+        List<Pedido> pedidos = pedidoService.listarPorEstado("Lista");
+        model.addAttribute("titulo", "Ordenes Completadas");
         model.addAttribute("pedidos", pedidos);
         return "Pedidos/pedidosCompletados"; // Asegúrate de que la ruta sea correcta
+    }
+
+    @GetMapping("/Ordenes/{username}")
+    public String OrdenesRepartidor(@PathVariable("username") String username, Model model) {
+    // Buscar el usuario por username
+    Optional<User> optionalUsuario = userService.getUserByUsername(username);
+    
+    // Verificar si el usuario existe
+    if (optionalUsuario.isEmpty()) {
+        // Manejar el caso donde el usuario no exista
+        model.addAttribute("error", "El usuario no existe.");
+        return "redirect:/Usuarios";
+    }
+    
+    User usuario = optionalUsuario.get(); // Obtener el usuario del Optional
+
+    // Obtener la lista de pedidos asignados al repartidor
+    List<Pedido> pedidosAsignados = pedidoService.listarPorRepartidor(usuario);
+
+    // Pasar los pedidos y datos al modelo
+    model.addAttribute("pedidos", pedidosAsignados);
+    model.addAttribute("usuario", usuario);
+    model.addAttribute("titulo", "Mis Órdenes");
+
+    return "Pedidos/OrdenesRepartidor";
+    }
+
+    @PostMapping("/Activar/{username}")
+    public String ActivarRepartidor(@PathVariable("username") String username, Model model) {
+        // Buscar el usuario por username
+        Optional<User> optionalUsuario = userService.getUserByUsername(username);
+        
+        // Verificar si el usuario existe
+        if (optionalUsuario.isEmpty()) {
+            // Manejar el caso donde el usuario no exista
+            model.addAttribute("error", "El usuario no existe.");
+            return "redirect:/Usuarios";
+        }
+        
+        User usuario = optionalUsuario.get(); // Obtener el usuario del Optional
+        usuario.setDisponibilidad("Disponible");
+        userService.updateUser(usuario);
+        return "redirect:/pedidos/Ordenes/" + username; // Redirigir a las órdenes del repartidor
+    }
+    @PostMapping("/Desactivar/{username}")
+    public String DesactivarRepartidor(@PathVariable("username") String username, Model model) {
+        // Buscar el usuario por username
+        Optional<User> optionalUsuario = userService.getUserByUsername(username);
+        
+        // Verificar si el usuario existe
+        if (optionalUsuario.isEmpty()) {
+            // Manejar el caso donde el usuario no exista
+            model.addAttribute("error", "El usuario no existe.");
+            return "redirect:/Usuarios";
+        }
+        
+        User usuario = optionalUsuario.get(); // Obtener el usuario del Optional
+        usuario.setDisponibilidad("No Disponible");
+        userService.updateUser(usuario);
+        return "redirect:/pedidos/Ordenes/" + username; // Redirigir a las órdenes del repartidor
+    }
+
+    @PostMapping("/entregaRepartidor/{id}")
+    public String entregaRepartidor(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        Pedido pedido = pedidoService.buscarPorId(id);
+        pedido.setEstado("En Camino"); 
+
+        // Verificar si ya tiene un repartidor asignado
+        if (pedido.getRepartidor() == null) {
+            // Buscar los repartidores disponibles
+            List<User> repartidoresDisponibles = userService.findByRoleAndDisponibilidad("Repartidor", "Disponible");
+            if (repartidoresDisponibles.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "No hay repartidores disponibles.");
+                return "redirect:/pedidos/completados";
+            }
+
+            // Seleccionar un repartidor aleatorio
+            User repartidorAsignado = repartidoresDisponibles.get(new Random().nextInt(repartidoresDisponibles.size()));
+            // Asignar el repartidor al pedido
+            pedido.setRepartidor(repartidorAsignado);
+        }
+
+        pedidoService.guardar(pedido);
+        redirectAttributes.addFlashAttribute("success", "Orden Entregada a Repartidor.");
+        return "redirect:/pedidos/preparacion"; 
     }
 }

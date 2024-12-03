@@ -34,7 +34,7 @@
                             <div class="mt-auto">  
                                 <form th:action="@{/pedidos/completar/{id}(id=${pedido.id})}" method="post">
                                     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-                                    <button type="submit" class="btn btn-success" style="display: block; margin: 0 auto;"><small>Marcar como Completada</small></button>
+                                    <button type="submit" class="btn btn-success" style="display: block; margin: 0 auto;"><small>Marcar como Lista</small></button>
                                 </form>
                             </div>
                         </div>

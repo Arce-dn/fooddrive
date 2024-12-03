@@ -44,6 +44,10 @@ public class PedidoServiceImpl implements PedidoService {
     public List<Pedido> listarPorCliente(User cliente) {
         return pedidoRepository.findByCliente(cliente);
     }
+    @Override
+    public List<Pedido> listarPorRepartidor(User repartidor) {
+        return pedidoRepository.findByRepartidor(repartidor);
+    }
 
     @Override
     public List<Pedido> listarPorEstado(String estado) {

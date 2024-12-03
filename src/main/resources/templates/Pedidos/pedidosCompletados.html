@@ -9,12 +9,12 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Órdenes Completadas</li>
+                  <li class="breadcrumb-item active" aria-current="page">Ordenes Completadas</li>
                 </ol>
             </nav>
 
             <div class="px-4 py-5 my-5 text-center">
-                <h1 class="display-5 fw-bold">Órdenes Completadas</h1>
+                <h1 class="display-5 fw-bold">Ordenes Listas</h1>
             </div>
 
             <div class="card-group row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4">
@@ -29,7 +29,14 @@
                                     <span th:text="${detalle.producto.nombre}"></span> x <span th:text="${detalle.cantidad}"></span>
                                 </li>
                             </ul>
-                            <p class="card-text">Total: $<span th:text="${pedido.total}"></span></p>                            
+                            <p class="card-text">Total: $<span th:text="${pedido.total}"></span></p>  
+                            
+                            <div class="mt-auto">  
+                                <form th:action="@{/pedidos/entregaRepartidor/{id}(id=${pedido.id})}" method="post">
+                                    <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                                    <button type="submit" class="btn btn-success" style="display: block; margin: 0 auto;"><small>Entregada a Repartidor</small></button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

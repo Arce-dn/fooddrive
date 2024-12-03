@@ -13,4 +13,5 @@ import com.fooddrive.app.entity.User;
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findByCliente(User cliente); // Buscar pedidos de un cliente
     List<Pedido> findByEstado(String estado); // Buscar pedidos por estado
+    List<Pedido> findByRepartidor(User repartidor);
 }

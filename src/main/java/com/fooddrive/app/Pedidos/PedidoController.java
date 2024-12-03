@@ -70,7 +70,7 @@ public class PedidoController {
         model.addAttribute("titulo", "Registrar Pedido");
         model.addAttribute("productosMenu", detallesMenu);
         model.addAttribute("pedido", new Pedido());
-        return "/Pedidos/crearPedido";
+        return "Pedidos/crearPedido";
     }
 
     @PostMapping("/guardar")
@@ -322,6 +322,6 @@ public class PedidoController {
     public String listarPedidosCompletados(Model model) {
         List<Pedido> pedidos = pedidoService.listarPorEstado("Completada");
         model.addAttribute("pedidos", pedidos);
-        return "/Pedidos/pedidosCompletados"; // Asegúrate de que la ruta sea correcta
+        return "Pedidos/pedidosCompletados"; // Asegúrate de que la ruta sea correcta
     }
 }

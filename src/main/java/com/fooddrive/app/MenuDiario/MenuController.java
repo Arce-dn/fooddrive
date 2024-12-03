@@ -81,7 +81,7 @@ public class MenuController {
         model.addAttribute("categoria", listaCategoria);
         model.addAttribute("productosMenu", detallesMenu);
         model.addAttribute("menuId", menu.getId());
-        return "/MenuDiario/menuDiario";
+        return "MenuDiario/menuDiario";
     }
 
     //Se encarga de crear el detalle menu (MOstrar en menu diario)
@@ -161,7 +161,7 @@ public class MenuController {
         model.addAttribute("direccion", direccionUsuario);
         model.addAttribute("totalPuntos", totalPuntos); 
         model.addAttribute("titulo", "Menú diario");
-        return "/MenuDiario/verMenuCliente";
+        return "MenuDiario/verMenuCliente";
     }
     
 }

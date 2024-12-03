@@ -118,7 +118,9 @@ public class MenuController {
         }
 
         // LIsta el Menu del dia, previamente gestionado por el encargado
-        List<DetalleMenu> detallesMenu = detalleMenuService.listarPorMenu(menu);
+        List<DetalleMenu> detallesMenu = detalleMenuService.listarPorMenu(menu).stream()
+            .filter(detalleMenu -> detalleMenu.getProducto().getCantidad() > 0) //Agg esta y la de abajo lineas.....///KC
+            .collect(Collectors.toList());;
 
         // Lista de categorías para mostrar secciones en menu diario 
         List<Categoria> listaCategoria = categoriaService.ListaCategoria();

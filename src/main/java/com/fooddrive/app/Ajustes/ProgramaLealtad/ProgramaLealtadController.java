@@ -41,13 +41,13 @@ public class ProgramaLealtadController {
         return "Ajustes/ProgramaLealtad/configuracionesPrograma";
     }
 
-    @PostMapping("/actualizar")
+    @PostMapping("/ProgramaLealtad/actualizar")
     public String actualizarConfiguracion(@RequestParam boolean puntosActivos, @RequestParam boolean cuponesActivos) {
         configuracionProgramaService.actualizarConfiguracion(puntosActivos, cuponesActivos);
         return "redirect:/ProgramaLealtad";
     }
 
-    @GetMapping("/Puntos")
+    @GetMapping("/ProgramaLealtad/Puntos")
     public String verPuntos(Model model) {
         puntoService.asignarPuntosAUsuarios();
         model.addAttribute("puntos", puntoService.obtenerPuntosActivos());
@@ -56,14 +56,14 @@ public class ProgramaLealtadController {
         return "Ajustes/ProgramaLealtad/verPuntos";
     }
 
-    @GetMapping("/Puntos/editar/{id}")
+    @GetMapping("/ProgramaLealtad/Puntos/editar/{id}")
     public String editarPuntos(@PathVariable("id") Long id, Model model) {
         Punto punto = puntoService.obtenerPuntoPorId(id);
         model.addAttribute("punto", punto);
         return "editarPuntos"; // Nombre de la vista
     }
 
-    @PostMapping("/Puntos/actualizar")
+    @PostMapping("/ProgramaLealtad/Puntos/actualizar")
     public String actualizarPuntos(@RequestParam("puntoId") Long puntoId,
                                     @RequestParam("cantidadPuntos") int cantidadPuntos, RedirectAttributes redirectAttributes) {
         puntoService.actualizarCantidadPuntos(puntoId, cantidadPuntos);
@@ -71,7 +71,7 @@ public class ProgramaLealtadController {
         return "redirect:/ProgramaLealtad/Puntos"; // Redirigir a la lista de puntos después de la actualización
     }
 
-    @GetMapping("/Cupones")
+    @GetMapping("/ProgramaLealtad/Cupones")
     public String verCupones(Model model) {
         model.addAttribute("cupones", cuponService.obtenerCuponesActivos());
         model.addAttribute("usuarios", userService.getAllUsers()); // Para asignar cupones a los usuarios
@@ -80,7 +80,7 @@ public class ProgramaLealtadController {
     }
 
         // Crear nuevo cupón
-    @PostMapping("/Cupones/crear")
+    @PostMapping("/ProgramaLealtad/Cupones/crear")
     public String crearCupon(@RequestParam Long userId, @RequestParam String codigo, @RequestParam Double descuento, @RequestParam String fechaVencimiento, RedirectAttributes redirectAttributes) {
         
         // Obtén la configuración del programa
@@ -104,7 +104,7 @@ public class ProgramaLealtadController {
         return "redirect:/ProgramaLealtad/Cupones";
     }
 
-    @PostMapping("/Cupones/eliminar")
+    @PostMapping("/ProgramaLealtad/Cupones/eliminar")
     public String eliminarCupon(@RequestParam Long cuponId,RedirectAttributes redirectAttributes) {
         cuponService.eliminarCupon(cuponId);
         redirectAttributes.addFlashAttribute("error","El cupón se ha eliminado éxitosamente.");

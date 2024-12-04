@@ -44,7 +44,7 @@
                   </nav> -->
                   <nav class="navbar bg-body-tertiary">
                     <div class="container-fluid">
-                        <div class="d-flex gap-2">
+                        <div class="d-flex flex-wrap gap-2">
                             <button 
                                 class="btn btn-primary" 
                                 type="button" 
@@ -57,63 +57,55 @@
                                 type="button"
                                 data-bs-toggle="modal" 
                                 data-bs-target="#formularioProductoModal02">
-                                Agregar categoria
+                                Agregar categoría
                             </button>
                         </div>
-                        <form class="d-flex ms-auto" role="search">
-                            <input class="form-control me-2" type="search" placeholder="Buscar Producto" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Buscar</button>
-                        </form>
+
                     </div>
                 </nav>
                 
-
                 <!-- Tabla de datos -->
-                <table class="table">
-                    <thead class="table-dark">
-                        <tr>
-                            <th scope="col">Codigo</th>
-                            <th scope="col">Producto</th>
-                            <th scope="col">Precio</th>
-                            <th scope="col">Cantidad</th>
-                            <th scope="col">Descripción</th>
-                            <th scope="col">Categoría</th>
-                            <th scope="col">Disponibilidad</th>
-                            <th scope="col">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="producto : ${producto}">
-                            <td th:text="${producto.id_producto}"></td>
-                            <!-- <td th:text="${producto.imagen}"></td> -->
-                            <td th:text="${producto.nombre}"></td>
-                            <td th:text="'$' + ${producto.precio}"></td>
-                            <td th:text="${producto.cantidad}"></td>
-                            <td th:text="${producto.descripcion}" style="width: 200px;"></td>
-                            <td th:text="${producto.categoria.nombre}"></td>
-                            <td th:text="${producto.disponibilidad ? 'Disponible' : 'No Disponible'}"></td>
-                            <td>
-                                <!-- <button type="button" class="btn btn-success"
-                                data-bs-toggle="modal" 
-                                data-bs-target="#formularioProductoModal" 
-                                th:href="@{/producto/edit/{id_producto}(id_producto=${producto.id_producto})}">Editar</button> | -->
-                                <button 
-                                    class="btn btn-warning editar-btn" 
-                                    type="button" 
-                                    th:attr="data-id=${producto.id_producto}">
-                                    Editar
-                                </button>  |
-                                <!-- <button type="button" class="btn btn-danger" 
-                                th:href="@{/producto/delete/{id_producto}(id_producto=${producto.id_producto})}">Eliminar</button> -->
-                                <button 
-                                class="btn btn-danger eliminar-btn" 
-                                th:attr="data-idd=${producto.id_producto}">
-                                Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">Código</th>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col" style="min-width: 150px;">Descripción</th>
+                                <th scope="col">Categoría</th>
+                                <th scope="col">Disponibilidad</th>
+                                <th scope="col" style="min-width: 150px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="producto : ${producto}">
+                                <td th:text="${producto.id_producto}"></td>
+                                <td th:text="${producto.nombre}"></td>
+                                <td th:text="'$' + ${producto.precio}"></td>
+                                <td th:text="${producto.cantidad}"></td>
+                                <td th:text="${producto.descripcion}" class="text-truncate" style="max-width: 200px;"></td>
+                                <td th:text="${producto.categoria.nombre}"></td>
+                                <td th:text="${producto.disponibilidad ? 'Disponible' : 'No Disponible'}"></td>
+                                <td>
+                                    <button 
+                                        class="btn btn-warning editar-btn" 
+                                        type="button" 
+                                        th:attr="data-id=${producto.id_producto}">
+                                        Editar
+                                    </button> |
+                                    <button 
+                                        class="btn btn-danger eliminar-btn" 
+                                        type="button" 
+                                        th:attr="data-idd=${producto.id_producto}">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

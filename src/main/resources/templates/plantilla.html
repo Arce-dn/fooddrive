@@ -22,7 +22,7 @@
                 </div>
             </div>
             <ul class="sidebar-nav">
-                <li class="sidebar-item">
+                <li class="sidebar-item" sec:authorize="hasAnyAuthority('Encargado del Menú','Administrador')">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#authP" aria-expanded="false" aria-controls="auth">
                         <i class="lni lni-pizza"></i>
@@ -35,21 +35,24 @@
                         <li class="sidebar-item">
                             <a th:href="@{/MenuDiario}" class="sidebar-link">Gestionar Menú Diario</a>
                         </li>
-                        <li class="sidebar-item">
-                            <a th:href="@{/Menu/{username}(username=${#authentication.name})}" class="sidebar-link">Menú Diario</a>
-                        </li>
                     </ul>
                 </li>
-                <li class="sidebar-item">
+                <li class="sidebar-item" sec:authorize="hasAnyAuthority('Encargado de Pedidos', 'Administrador')">
                     <a th:href="@{/pedidos/lista}" class="sidebar-link">
                         <i class="lni lni-layers"></i>
                         <span>Pedidos</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
+                <li class="sidebar-item" sec:authorize="hasAnyAuthority('Cliente','Administrador','Encargado del Menú')">
+                    <a th:href="@{/Menu/{username}(username=${#authentication.name})}" class="sidebar-link">
+                        <i class="bi bi-basket-fill"></i>
+                        <span>Menú</span>
+                    </a>
+                </li>
+                <li class="sidebar-item" sec:authorize="hasAnyAuthority('Encargado de Pedidos','Administrador')">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                        <i class="lni lni-shopping-basket"></i>
+                        <i class="bi bi-bar-chart-steps"></i>
                         <span>Despacho de Pedidos</span>
                     </a>
                     <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -62,7 +65,7 @@
                     </ul>
                 </li>
                 
-                <li class="sidebar-item">
+                <li class="sidebar-item" sec:authorize="hasAnyAuthority('Repartidor')">
                     <a th:href="@{/pedidos/Ordenes/{username}(username=${#authentication.name})}" class="sidebar-link">
                         <i class="lni lni-popup"></i>
                         <span>Mis Ordenes</span>

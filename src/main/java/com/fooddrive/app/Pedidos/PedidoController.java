@@ -5,9 +5,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +22,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fooddrive.app.Ajustes.ProgramaLealtad.Service.ConfiguracionProgramaService;
 import com.fooddrive.app.MenuDiario.Service.DetalleMenuServiceImpl;
 import com.fooddrive.app.MenuDiario.Service.MenuServiceImpl;
 import com.fooddrive.app.Pedidos.Services.DetallePedidoService;
 import com.fooddrive.app.Pedidos.Services.PedidoService;
 import com.fooddrive.app.Productos.Service.ProductoService;
+import com.fooddrive.app.entity.ConfiguracionPrograma;
 import com.fooddrive.app.entity.DetalleMenu;
 import com.fooddrive.app.entity.DetallePedido;
 import com.fooddrive.app.entity.Menu;
@@ -55,6 +59,8 @@ public class PedidoController {
     private UserService userService;
     @Autowired
     private DetallePedidoService detallePedidoService;
+    @Autowired
+    private ConfiguracionProgramaService configuracionProgramaService;
 
     @GetMapping("/crear")
     public String mostrarFormularioPedido(Authentication authentication, Model model) {
@@ -215,16 +221,23 @@ public class PedidoController {
         pedido.setTotal(totaldesc); // Usar el total con descuento recibido
     
         
-        // Calcular los puntos ganados
-        int puntosGanados = (int) totaldesc; // 1 punto por cada dólar
 
-        // Ahora actualizar solo los puntos activos sin sobrescribirlos
-        cliente.getPuntos().forEach(punto -> {
-            if (punto.isActivo()) {
-                // Aumentamos la cantidad de puntos activos para cada punto activo
-                punto.setCantidad(punto.getCantidad() + puntosGanados); 
-            }
-        });
+        // Obtén la configuración del programa
+        ConfiguracionPrograma configuracion = configuracionProgramaService.obtenerConfiguracion();
+
+        // Verifica si la creacion de cupones están activa
+        if (configuracion.isPuntosActivos()) {
+                    // Calcular los puntos ganados
+                    int puntosGanados = (int) totaldesc; // 1 punto por cada dólar
+
+                    // Ahora actualizar solo los puntos activos sin sobrescribirlos
+                    cliente.getPuntos().forEach(punto -> {
+                        if (punto.isActivo()) {
+                            // Aumentamos la cantidad de puntos activos para cada punto activo
+                            punto.setCantidad(punto.getCantidad() + puntosGanados); 
+                        }
+                    });
+        }
 
         // Guardar el cliente con los puntos actualizados
         userService.updateUser(cliente);
@@ -237,10 +250,18 @@ public class PedidoController {
 
     @GetMapping("/lista")
     public String listarPedidos(Model model) {
-        List<Pedido> pedidos = pedidoService.listarTodos();
+        List<Pedido> pedidos = pedidoService.listarPorEstado("Pendiente"); 
         model.addAttribute("titulo", "Listado de Pedidos");
         model.addAttribute("pedidos", pedidos);
         return "Pedidos/listaPedidos";
+    }
+
+    @GetMapping("/finalizados")
+    public String listarFinalizados(Model model) {
+        List<Pedido> pedidos = pedidoService.listarPorEstado("Entregado"); 
+        model.addAttribute("titulo", "Pedidos Finalizados");
+        model.addAttribute("pedidos", pedidos);
+        return "Pedidos/listaPedidosFinalizados";
     }
 
     // Método para ver el detalle de un pedido
@@ -264,12 +285,13 @@ public class PedidoController {
     }
 
     @GetMapping("/cambiarEstado/{id}")
-    public String cambiarEstado(@PathVariable("id") Long idPedido, Model model) {
+    public String cambiarEstado(@PathVariable("id") Long idPedido, Model model, RedirectAttributes redirectAttributes) {
         Pedido pedido = pedidoService.buscarPorId(idPedido);
         if (pedido != null) {
             pedido.setEstado("En Preparación"); // Cambiar el estado
             pedidoService.guardar(pedido); // Guardar el cambio en el servicio
         }
+        redirectAttributes.addFlashAttribute("success", "Ordén puesta en preparación.");
         return "redirect:/pedidos/lista"; // Redirigir a la lista de pedidos
     }
 
@@ -295,14 +317,14 @@ public class PedidoController {
         pedido.setRepartidor(repartidorAsignado);
 
         // Cambiar la disponibilidad del repartidor a "No Disponible"
-        repartidorAsignado.setDisponibilidad("No Disponible");
+        //repartidorAsignado.setDisponibilidad("No Disponible");
 
         // Actualizar el repartidor en la base de datos
-        userService.updateUser(repartidorAsignado);
+        //userService.updateUser(repartidorAsignado);
 
         // Guardar el pedido con el repartidor asignado
         pedidoService.guardar(pedido);
-
+        redirectAttributes.addFlashAttribute("success", "Ordén asignada a repartidor.");
         return "redirect:/pedidos/lista"; // Redirigir a la lista de pedidos después de asignar el repartidor
     } 
     // ORDENES EN PREPARACIÓN
@@ -355,7 +377,8 @@ public class PedidoController {
     }
 
     @GetMapping("/Ordenes/{username}")
-    public String OrdenesRepartidor(@PathVariable("username") String username, Model model) {
+    @PreAuthorize("hasAuthority('Repartidor')")
+    public String OrdenesRepartidor(@PathVariable("username") String username, Model model, RedirectAttributes redirectAttributes) {
     // Buscar el usuario por username
     Optional<User> optionalUsuario = userService.getUserByUsername(username);
     
@@ -370,11 +393,15 @@ public class PedidoController {
 
     // Obtener la lista de pedidos asignados al repartidor
     List<Pedido> pedidosAsignados = pedidoService.listarPorRepartidor(usuario);
+    List<Pedido> pedidosEnCamino = pedidosAsignados.stream()
+    .filter(pedido -> "En Camino".equals(pedido.getEstado()))
+    .collect(Collectors.toList());
 
     // Pasar los pedidos y datos al modelo
-    model.addAttribute("pedidos", pedidosAsignados);
+    model.addAttribute("pedidos", pedidosEnCamino);
     model.addAttribute("usuario", usuario);
     model.addAttribute("titulo", "Mis Órdenes");
+    redirectAttributes.addFlashAttribute("success", "Orden finalizada con éxito.");
 
     return "Pedidos/OrdenesRepartidor";
     }
@@ -436,6 +463,6 @@ public class PedidoController {
 
         pedidoService.guardar(pedido);
         redirectAttributes.addFlashAttribute("success", "Orden Entregada a Repartidor.");
-        return "redirect:/pedidos/preparacion"; 
+        return "redirect:/pedidos/completados"; 
     }
 }

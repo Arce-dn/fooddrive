@@ -16,20 +16,14 @@
 
             <!--Titulo de la Sección-->
             <div class="px-4 py-5 my-5 text-center">
-                <h1 class="display-5 fw-bold">Gestión de Pedidos</h1>
+                <h1 class="display-5 fw-bold">Pedidos Finalizados</h1>
             </div>
             
             <nav class="navbar bg-body-tertiary">
                 <div class="container-fluid">
                   <div class="d-grid gap-2 d-md-block">
-                    <a th:href="@{/pedidos/crear}" class="btn btn-primary">Nueva Orden</a>
-                    <a th:href="@{/pedidos/finalizados}" class="btn btn-danger">Ordenes Finalizadas</a>
+                    <a th:href="@{/pedidos/lista}" class="btn btn-danger">Ordenes Pendientes</a>
                   </div>
-                  <!--
-                  <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Buscar Usuario" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Buscar</button>
-                  </form>-->
                 </div>
               </nav>
             
@@ -43,7 +37,6 @@
                         <th scope="col">Total</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Repartidor</th>
-                        <th scope="col" style="width: 20%;">Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -54,11 +47,6 @@
                         <td th:text="'$ ' + ${pedido.total}"></td>
                         <td th:text="${pedido.estado}"></td>
                         <td th:text="${pedido.repartidor != null ? pedido.repartidor.username : 'Sin asignar'}"></td>
-                        <td>
-                            <a class="btn btn-info" th:href="@{/pedidos/detalle/{id}(id=${pedido.id})}" data-toggle="tooltip" title="Ver detalles"><i class="bi bi-eye-fill"></i></a> 
-                            <a class="btn btn-danger" th:href="@{/pedidos/asignarRepartidor/{id}(id=${pedido.id})}" data-toggle="tooltip" title="Asignar Repartidor"><i class="bi bi-bicycle"></i></a>
-                            <a class="btn btn-warning" th:href="@{/pedidos/cambiarEstado/{id}(id=${pedido.id})}" data-toggle="tooltip" title="Iniciar Preparación"><i class="bi bi-cursor-fill"></i></a>
-                        </td>
                       </tr>
                     </tbody>
                   </table>

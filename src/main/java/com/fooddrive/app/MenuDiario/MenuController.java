@@ -108,13 +108,14 @@ public class MenuController {
 
     //Vista Menu diario desde cliente
     @GetMapping("/Menu/{username}")
-    public String verMenu(Model model,@PathVariable("username") String username ) {
+    public String verMenu(Model model,@PathVariable("username") String username, RedirectAttributes redirectAttributes ) {
         Menu menu = null;
         menu = menuService.buscarPorFecha(LocalDate.now()); //Si no encuentra con la fecha de hoy sera nulo
         if(menu == null){
             //Si es nulo procede a mostrar mensaje de no disponible
+            //redirectAttributes.addFlashAttribute("success", "Menu no dispobnile, favor intenta mas tarde");
             model.addAttribute("mensaje", "Menu no dispobnile, favor intenta mas tarde");
-            return "/MenuDiario/verMenuCliente";
+            return "MenuDiario/verMenuCliente";
         }
 
         // LIsta el Menu del dia, previamente gestionado por el encargado

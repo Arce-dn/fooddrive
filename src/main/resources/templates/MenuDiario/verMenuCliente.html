@@ -48,6 +48,12 @@
                 <!-- Botón del carrito -->
                 <div class="position-relative">
                     <button class="btn btn-light" id="btnCarrito" style="position: relative;" data-bs-toggle="modal" data-bs-target="#carritoModal">
+                        🛒 Procesar Carrito
+                    </button>
+                </div>
+
+                <div class="position-relative">
+                    <button class="btn btn-light" id="btnCarrito" style="position: fixed; top: 10px; right: 10px;" data-bs-toggle="modal" data-bs-target="#carritoModal">
                         🛒 Carrito (<span id="carritoCantidad">0</span>)
                     </button>
                 </div>
@@ -156,6 +162,7 @@ function agregarAlCarrito(button) {
 }
 
 // Función para actualizar la vista del carrito
+// Función para actualizar la vista del carrito
 function actualizarCarrito() {
     let carritoDiv = document.getElementById("productosCarrito");
     let carritoCantidad = document.getElementById("carritoCantidad");
@@ -170,10 +177,11 @@ function actualizarCarrito() {
     let cantidades = [];
     let total = 0;
 
-    carrito.forEach(producto => {
+    carrito.forEach((producto, index) => {
         let productoHtml = `
-            <div class="mb-2">
-                <p>${producto.nombre} - $${producto.precio} x ${producto.cantidad}</p>
+            <div class="mb-2 d-flex justify-content-between align-items-center">
+                <p class="mb-0">${producto.nombre} - $${producto.precio} x ${producto.cantidad}</p>
+                <button class="btn btn-danger btn-sm" onclick="eliminarDelCarrito(${index})">X</button>
             </div>
         `;
         carritoDiv.innerHTML += productoHtml;
@@ -208,6 +216,15 @@ function actualizarCarrito() {
 
     // Actualizar la cantidad en el botón
     carritoCantidad.innerText = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);  // Sumar las cantidades
+}
+
+// Función para eliminar un producto del carrito
+function eliminarDelCarrito(index) {
+    // Eliminar el producto en el índice especificado
+    carrito.splice(index, 1);
+
+    // Actualizar la vista del carrito
+    actualizarCarrito();
 }
 
 // Función para aplicar el descuento del cupón

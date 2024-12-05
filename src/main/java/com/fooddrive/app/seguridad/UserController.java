@@ -38,4 +38,10 @@ public class UserController {
         userService.save(user);
         return "redirect:/login"; // Redirige después del registro
     }
+
+    @GetMapping("/repartidor/dashboard")
+    public String repartidorDashboard() {
+        // Aquí puedes devolver la vista específica para repartidores
+        return "Pedidos/OrdenesRepartidor"; // Asegúrate de tener esta vista creada
+    }
 }

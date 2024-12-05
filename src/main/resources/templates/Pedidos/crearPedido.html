@@ -121,7 +121,7 @@ function mostrarProductoEnTabla(producto) {
 
     // Columna Cantidad
     var tdCantidad = document.createElement('td');
-    tdCantidad.innerHTML = `<input type="number" name="cantidades" min="1" value="1" class="cantidadInput" oninput="actualizarSubtotal(this)">
+    tdCantidad.innerHTML = `<input type="number" name="cantidades" min="0" value="1" class="cantidadInput" oninput="actualizarSubtotal(this)">
                             <input type="hidden" name="productos" value="${producto.id_producto}" class="productoId">`;
     row.appendChild(tdCantidad);
     

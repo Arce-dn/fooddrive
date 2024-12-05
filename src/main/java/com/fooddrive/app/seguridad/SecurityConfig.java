@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +35,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .permitAll()
                 .defaultSuccessUrl("/Inicio", true) // Redirecciona a la página principal después de iniciar sesión
+                .successHandler(authenticationSuccessHandler())
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")// URL de cierre de sesión
@@ -56,5 +58,21 @@ public class SecurityConfig {
         AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         return auth.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            // Verifica el rol y redirige según corresponda
+            boolean isRepartidor = authentication.getAuthorities().stream()
+            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("Repartidor"));;
+
+            if (isRepartidor) {
+                String username = authentication.getName();  // Obtiene el nombre de usuario
+                response.sendRedirect("/pedidos/Ordenes/" + username); // Ruta para Repartidor
+            } else {
+                response.sendRedirect("/Inicio"); // Ruta predeterminada para otros roles
+            }
+        };
     }
 }

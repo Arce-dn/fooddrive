@@ -4,15 +4,9 @@
 </head>
 <body>
     <div class="wrapper">
-        <aside th:replace="~{plantilla :: aside}"></aside>
+
         <div class="main p-3">
-            <div class="text" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                      <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
-                      <li class="breadcrumb-item active" aria-current="page">Mis Ordenes</li>
-                    </ol>
-                </nav>
+            <div class="text">
     
                 <!--Titulo de la Sección-->
                 <div class="px-4 py-5 my-5 text-center">
@@ -54,29 +48,51 @@
                     </div>
                 </div>
 
-                <div class="container mt-4">
+                <div class=" mt-4">
                     
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                        <div class="col" th:each="pedido : ${pedidos}">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">Pedido ID: <span th:text="${pedido.id}"></span></h5>
-                                    <p class="card-text"><strong>Fecha:</strong> <span th:text="${pedido.fechaPedido}"></span></p>
-                                    <p class="card-text"><strong>Estado:</strong> <span th:text="${pedido.estado}"></span></p>
-                                    <p class="card-text"><strong>Total:</strong> $<span th:text="${pedido.total}"></span></p>
-                                    <p class="card-text"><strong>Dirección:</strong> <span th:text="${pedido.direccionEntrega}"></span></p>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <form th:action="@{/pedidos/finalizar/{id}(id=${pedido.id})}" method="post">
-                                        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-                                        <input type="hidden" name="username" th:value="${username}" />
-                                        <button type="submit" class="btn btn-success" style="display: block; margin: 0 auto;"><small>Finalizar Pedido</small></button>
-                                    </form>
+                    <div class="row">
+                        <!-- Verifica si la lista de pedidos está vacía -->
+                        <div th:if="${#lists.isEmpty(pedidos)}" class="col-12">
+                            <div class="alert alert-info text-center" role="alert">
+                                <strong>No hay órdenes pendientes</strong>
+                            </div>
+                        </div>
+                    
+                        <!-- Si hay pedidos, los muestra en tarjetas -->
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 content-center">
+                            <div class="col" th:each="pedido : ${pedidos}">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Pedido ID: <span th:text="${pedido.id}"></span></h5>
+                                        <p class="card-text"><strong>Fecha:</strong> <span th:text="${pedido.fechaPedido}"></span></p>
+                                        <p class="card-text"><strong>Estado:</strong> <span th:text="${pedido.estado}"></span></p>
+                                        <p class="card-text"><strong>Total:</strong> $<span th:text="${pedido.total}"></span></p>
+                                        <p class="card-text"><strong>Dirección:</strong> <span th:text="${pedido.direccionEntrega}"></span></p>
+                                    </div>
+                                    <div class="card-footer text-center">
+                                        <form th:action="@{/pedidos/finalizar/{id}(id=${pedido.id})}" method="post">
+                                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                                            <input type="hidden" name="username" th:value="${username}" />
+                                            <button type="submit" class="btn btn-success" style="display: block; margin: 0 auto;"><small>Finalizar Pedido</small></button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+<br>
+                <div class="d-grid gap-2">
+                    <a href="#" class="btn btn-danger" th:onclick="|logoutForm.submit();|">
+                        <span>Cerrar Sesión</span>
+                    </a>
+                    
+                    <form th:action="@{/logout}" method="post" th:id="logoutForm" style="display: none;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    </form>
+                </div>
+
+                
             </div>
         </div>
     </div>  

@@ -23,12 +23,14 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fooddrive.app.Ajustes.ProgramaLealtad.Service.ConfiguracionProgramaService;
+import com.fooddrive.app.Ajustes.ProgramaLealtad.Service.CuponService;
 import com.fooddrive.app.MenuDiario.Service.DetalleMenuServiceImpl;
 import com.fooddrive.app.MenuDiario.Service.MenuServiceImpl;
 import com.fooddrive.app.Pedidos.Services.DetallePedidoService;
 import com.fooddrive.app.Pedidos.Services.PedidoService;
 import com.fooddrive.app.Productos.Service.ProductoService;
 import com.fooddrive.app.entity.ConfiguracionPrograma;
+import com.fooddrive.app.entity.Cupon;
 import com.fooddrive.app.entity.DetalleMenu;
 import com.fooddrive.app.entity.DetallePedido;
 import com.fooddrive.app.entity.Menu;
@@ -61,6 +63,8 @@ public class PedidoController {
     private DetallePedidoService detallePedidoService;
     @Autowired
     private ConfiguracionProgramaService configuracionProgramaService;
+    @Autowired
+    private CuponService cuponService;
 
     @GetMapping("/crear")
     public String mostrarFormularioPedido(Authentication authentication, Model model) {
@@ -136,6 +140,7 @@ public class PedidoController {
                                         @RequestParam("direccionEntrega") String direccionEntrega,
                                         @RequestParam("totaldesc") double totaldesc, // Recibir el total con descuento
                                         @RequestParam("puntosUsados") int puntosUsados, // Puntos usados
+                                        @RequestParam(value = "cuponId", required = false) Long cuponId,
                                         Authentication authentication, RedirectAttributes redirectAttributes) {
         // Obtener el cliente autenticado
         String nombreUsuario = authentication.getName();
@@ -193,6 +198,15 @@ public class PedidoController {
             }
     
             double subtotal = producto.getPrecio() * cantidad;
+
+            // Procesar cupón si se utilizó
+            if (cuponId != null) {
+                Cupon cupon = cuponService.buscarPorId(cuponId);
+                if (cupon != null && cupon.isActivo()) {
+                    cupon.setActivo(false); // Cambiar el estado a inactivo
+                    cuponService.guardarCupon(cupon); // Actualizar el cupón en la base de datos
+                }
+            }
     
             // Crear detalle de pedido
             DetallePedido detalle = new DetallePedido();

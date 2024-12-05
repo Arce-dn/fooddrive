@@ -109,6 +109,7 @@
                                     <input type="hidden" name="cantidades" id="cantidadesInput">
                                     <input type="hidden" id="totalDescInput" name="totaldesc" value="0.00">
                                     <input type="hidden" id="puntosUsadosInput" name="puntosUsados" value="0"> <!-- Campo oculto -->
+                                    <input type="hidden" id="cuponIdInput" name="cuponId" value="">
                                 
                                     <!-- Botón para enviar el pedido -->
                                     <button type="submit" class="btn btn-primary">Confirmar Pedido</button>
@@ -230,16 +231,22 @@ function eliminarDelCarrito(index) {
 // Función para aplicar el descuento del cupón
 function aplicarDescuento() {
     let cuponSelect = document.getElementById("cuponSelect");
-    let cuponId = cuponSelect.value;
+    let cuponId = cuponSelect.value; // Obtener el id del cupón seleccionado
     let cupones = document.querySelectorAll("option"); // Obtener los cupones disponibles
 
     // Verificar si se seleccionó un cupón
     if (cuponId) {
-        // Buscar el cupon seleccionado y obtener el descuento
+        // Buscar el cupón seleccionado y obtener el descuento
         let cuponSeleccionado = Array.from(cupones).find(cupon => cupon.value === cuponId);
         descuento = parseFloat(cuponSeleccionado.getAttribute("data-descuento")) / 100; // Descuento como porcentaje
     } else {
         descuento = 0; // Si no se selecciona un cupón, resetear el descuento
+    }
+
+    // Actualizar el campo oculto para enviar el ID del cupón
+    let cuponIdInput = document.getElementById("cuponIdInput");
+    if (cuponIdInput) {
+        cuponIdInput.value = cuponId; // Asignar el ID del cupón seleccionado
     }
 
     actualizarCarrito();

@@ -49,4 +49,9 @@ public class CuponService {
     public void eliminarCupon(Long cuponId) {
         cuponRepository.deleteById(cuponId);
     }
+
+    public Cupon buscarPorId(Long cuponId) {
+        return cuponRepository.findById(cuponId)
+                .orElseThrow(() -> new RuntimeException("Cupón no encontrado con ID: " + cuponId));
+    }
 }

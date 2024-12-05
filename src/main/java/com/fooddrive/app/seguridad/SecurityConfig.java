@@ -66,12 +66,19 @@ public class SecurityConfig {
             // Verifica el rol y redirige según corresponda
             boolean isRepartidor = authentication.getAuthorities().stream()
             .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("Repartidor"));;
+            boolean isCliente = authentication.getAuthorities().stream()
+            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("Cliente"));;
 
             if (isRepartidor) {
                 String username = authentication.getName();  // Obtiene el nombre de usuario
                 response.sendRedirect("/pedidos/Ordenes/" + username); // Ruta para Repartidor
             } else {
-                response.sendRedirect("/Inicio"); // Ruta predeterminada para otros roles
+                if (isCliente) {
+                    String username = authentication.getName();  // Obtiene el nombre de usuario
+                    response.sendRedirect("/Menu/" + username); // Ruta para Repartidor
+                } else {
+                    response.sendRedirect("/Inicio"); // Ruta predeterminada para otros roles
+                } // Ruta predeterminada para otros roles
             }
         };
     }

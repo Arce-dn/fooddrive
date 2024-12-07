@@ -12,6 +12,11 @@ public class InicioController {
         return "home";
     }
 
+    @GetMapping({"/publico"})
+    public String inicioPublico(){
+        return "inicioPublico";
+    }
+
     @GetMapping("/login") // Ruta para la página de inicio de sesión
     public String login(Model model) {
         model.addAttribute("titulo", "Iniciar Sesión");

@@ -28,7 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/login", "/register", "/css/**", "/js/**","/images/**").permitAll() // Rutas públicas
+                .requestMatchers("/publico", "/login", "/register", "/css/**", "/js/**","/images/**").permitAll() // Rutas públicas
                 .anyRequest().authenticated() // Rutas que requieren autenticación
             )
             .formLogin(form -> form
@@ -39,11 +39,14 @@ public class SecurityConfig {
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")// URL de cierre de sesión
-                .logoutSuccessUrl("/login?logout") // Redirecciona después de cerrar sesión
+                .logoutSuccessUrl("/publico") // Redirecciona después de cerrar sesión
                 .permitAll() // Permitir acceso a la URL de cierre de sesión
             )
             .exceptionHandling(exception -> exception
             .accessDeniedPage("/403") // Página personalizada para error 403
+            .authenticationEntryPoint((request, response, authException) -> {
+                response.sendRedirect("/publico"); // Redirige a la página pública
+            })
         );
         return http.build();
     }

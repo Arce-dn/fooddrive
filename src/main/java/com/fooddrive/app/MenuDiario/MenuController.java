@@ -114,7 +114,7 @@ public class MenuController {
         if(menu == null){
             //Si es nulo procede a mostrar mensaje de no disponible
             //redirectAttributes.addFlashAttribute("success", "Menu no dispobnile, favor intenta mas tarde");
-            model.addAttribute("mensaje", "Menu no dispobnile, favor intenta mas tarde");
+            model.addAttribute("mensaje", "Menu no disponible, favor intenta mas tarde");
             return "MenuDiario/verMenuCliente";
         }
 

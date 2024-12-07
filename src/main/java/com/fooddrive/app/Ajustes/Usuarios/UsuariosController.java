@@ -191,6 +191,13 @@ public class UsuariosController {
         // Guardar los cambios en la base de datos
         userService.updateUser(usuarioExistente);
         redirectAttributes.addFlashAttribute("success", "Información de contacto actualizada.");
+
+        // Verificar si el usuario tiene el rol de cliente
+        if (usuarioExistente.getRoles().stream().anyMatch(role -> role.getName().equalsIgnoreCase("Cliente"))) {
+            redirectAttributes.addFlashAttribute("success", "Información de contacto actualizada.");
+            return "redirect:/Usuarios/informacionCliente/" + username;
+        }
+        
         return "redirect:/Usuarios/informacion/" + username;
     }
 
@@ -239,6 +246,38 @@ public class UsuariosController {
         model.addAttribute("cupones", cuponesActivos);
         model.addAttribute("roles", roleService.getAllRoles()); // Lista de roles
         return "Ajustes/Usuarios/verInformacion";
+    }
+    @GetMapping("/Usuarios/informacionCliente/{username}")
+    public String mostrarInformacionCliente(@PathVariable("username") String username, Model model) {
+        // Buscar el usuario por username
+        Optional<User> optionalUsuario = userService.getUserByUsername(username);
+        
+        // Verificar si el usuario existe
+        if (optionalUsuario.isEmpty()) {
+            // Manejar el caso donde el usuario no exista
+            model.addAttribute("error", "El usuario no existe.");
+            return "redirect:/Usuarios";
+        }
+        
+        User usuario = optionalUsuario.get(); // Obtener el usuario del Optional
+        
+        // Filtrar los puntos activos y no vencidos
+        int totalPuntos = usuario.getPuntos().stream()
+                                .filter(punto -> punto.isActivo() && punto.getFechaVencimiento().isAfter(LocalDate.now()))  // Filtra puntos activos y no vencidos
+                                .mapToInt(Punto::getCantidad)  // Suma la cantidad de puntos
+                                .sum();
+
+                                // Filtrar los cupones activos y no vencidos
+        List<Cupon> cuponesActivos = usuario.getCupones().stream()
+                                        .filter(cupon -> cupon.isActivo() && cupon.getFechaVencimiento().isAfter(LocalDate.now())) // Filtra cupones activos y no vencidos
+                                        .collect(Collectors.toList());
+
+        model.addAttribute("titulo", "Información de Usuario");
+        model.addAttribute("totalPuntos", totalPuntos); 
+        model.addAttribute("usuario", usuario); // Usuario existente para el formulario
+        model.addAttribute("cupones", cuponesActivos);
+        model.addAttribute("roles", roleService.getAllRoles()); // Lista de roles
+        return "Ajustes/Usuarios/verInformacionCliente";
     }
 
     @PostMapping("/guardarUsuario")

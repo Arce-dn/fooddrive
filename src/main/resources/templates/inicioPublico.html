@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${titulo}"></title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/favicon.png}">
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Animación de fondo desplazándose */
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Fondo del header con gradiente en movimiento */
+        header {
+            background: 
+                linear-gradient(45deg, rgba(14, 34, 56, 0.8), rgba(58, 78, 112, 0.8), rgba(91, 127, 145, 0.8), rgba(74, 97, 113, 0.8)), 
+                url('https://wallpapers.com/images/hd/food-4k-1pf6px6ryqfjtnyr.jpg'); /* URL directa de la imagen */
+            background-size: 400% 400%, cover; /* Gradiente se anima, imagen se adapta */
+            background-position: center, center;
+            background-repeat: no-repeat, no-repeat;
+            animation: gradientMove 10s ease infinite;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0e2238;">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <i class="lni lni-grid-alt me-2"></i> FOOD-DRIVE
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-3">
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/publico}">Inicio</a></li>
+                    </ul>
+                    <a th:href="@{/login}" class="btn bg-primary ">Iniciar sesión</a>
+                </div>
+            </div>
+        </nav>
+    
+        <!-- Hero Section -->
+        <header class="bg-primary text-white text-center py-5">
+            <div class="container">
+                <!-- Ícono del header con estilo para hacerlo más grande -->
+                <a class="text-white text-center py-5 d-block" href="#" style="font-size: 4rem;">
+                    <i class="lni lni-grid-alt"></i>
+                </a>
+                <h1>Bienvenido a FOOD-DRIVE</h1>
+                <p class="lead">Compra fácil, rápido y sin salir de casa</p>
+            </div>
+        </header>
+    
+        <!-- Footer -->
+        <footer class="text-white text-center py-3" style="background-color: #0e2238;">
+            <p>&copy; 2024 FoodDrive. Todos los derechos reservados.</p>
+        </footer>
+
+    
+    <footer th:fragment="footer">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+        <script th:src="@{/js/script.js}"></script>
+    </footer>
+</body>
+</html>

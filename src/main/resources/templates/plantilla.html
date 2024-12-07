@@ -43,7 +43,7 @@
                         <span>Pedidos</span>
                     </a>
                 </li>
-                <li class="sidebar-item" sec:authorize="hasAnyAuthority('Cliente','Administrador','Encargado del Menú')">
+                <li class="sidebar-item" sec:authorize="hasAnyAuthority('Cliente','Administrador')">
                     <a th:href="@{/Menu/{username}(username=${#authentication.name})}" class="sidebar-link">
                         <i class="bi bi-basket-fill"></i>
                         <span>Menú</span>

@@ -90,6 +90,17 @@ body {
     transition: all 0.35s ease-in-out;
     background-color: #fafbfe;
 }
+.main {
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.35s ease-in-out;
+    background-color: #fafbfe;
+}
+.main2 {
+    background-color: #fafbfe;
+    height: calc(100vh - 60px);
+}
 
 #sidebar {
     width: 70px;

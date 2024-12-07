@@ -5,16 +5,41 @@
 </head>
 
 <body>
-    <div class="wrapper">
-        <aside th:replace="~{plantilla :: aside}"></aside>
-        <div class="main p-3" style="margin-left: 65px; height: 100vh; overflow-y: auto;">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0e2238;">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/publico}">
+                <i class="lni lni-grid-alt me-2"></i> FOOD-DRIVE
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li><a th:onclick="|logoutForm.submit();|" class="nav-link active">
+                        <span class="btn btn-outline-light">🏃‍♂️ Salir</span>
+                    </a></li>
+                    <li><a th:href="@{/Usuarios/informacionCliente/{username}(username=${#authentication.name})}" class="nav-link active">
+                        <span th:text="${#authentication.name}" class="btn btn-outline-light">Usuario</span>
+                    </a></li>
+                </ul>
+                    
+                
+                <button class="btn btn-light" id="btnCarrito" data-bs-toggle="modal" data-bs-target="#carritoModal">
+                    🛒 Carrito (<span id="carritoCantidad">0</span>)
+                </button>
+            </div>
+        </div>
+
+        <form th:action="@{/logout}" method="post" th:id="logoutForm" style="display: none;">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+        </form>
+    </nav>
+    <div>
+        <!--<aside th:replace="~{plantilla :: aside}"></aside>-->
+        
+
+        <div class="main p-3">
             <div class="text-center">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a th:href="@{/Inicio}">Inicio</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Menú del día</li>
-                    </ol>
-                </nav>
                 <div class="px-4 py-5 my-5 text-center">
                     <h1 class="display-5 fw-bold">Menú del día</h1>
                     <h1 class="display-10 fw-bold" th:text="${mensaje}"></h1>
@@ -53,9 +78,7 @@
                 </div>
 
                 <div class="position-relative">
-                    <button class="btn btn-light" id="btnCarrito" style="position: fixed; top: 10px; right: 10px;" data-bs-toggle="modal" data-bs-target="#carritoModal">
-                        🛒 Carrito (<span id="carritoCantidad">0</span>)
-                    </button>
+                    
                 </div>
 
                 <!-- Modal del Carrito -->
@@ -122,6 +145,10 @@
             </div>
         </div>
     </div>
+            <!-- Footer -->
+            <footer class="text-white text-center py-3" style="background-color: #0e2238;">
+                <p>&copy; 2024 FoodDrive. Todos los derechos reservados.</p>
+            </footer>
 
     <footer th:replace="~{plantilla :: footer}"></footer>
 

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0e2238;">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/publico}">
+            <i class="lni lni-grid-alt me-2"></i> FOOD-DRIVE
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto me-3">
+              <li><a th:href="@{/Menu/{username}(username=${#authentication.name})}" class="nav-link active">
+                <span class="btn btn-outline-light">ver Menú</span>
+            </a></li>
+                <li><a th:href="@{/Usuarios/informacionCliente/{username}(username=${#authentication.name})}" class="nav-link active">
+                    <span th:text="${#authentication.name}" class="btn btn-outline-light">Usuario</span>
+                </a></li>
+                
+            </ul>
+                
+            
+            <button class="btn btn-light" id="btnCarrito" data-bs-toggle="modal" data-bs-target="#carritoModal">
+                🛒 Carrito (<span id="carritoCantidad">0</span>)
+            </button>
+        </div>
+    </div>
+</nav>
+    <div class="wrappers">
+        <div class="main2 p-3">
+            <div class="text-center">
+
+                <!--Titulo de la Sección-->
+                <div class="px-4 py-5 my-5 text-center">
+                    <h1 class="display-5 fw-bold">Información de Usuario</h1>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="fw-bold text-center flex-grow-1">Nombre de Usuario: <span th:text="${usuario.username}"></span></h3>
+                                <!-- Aquí el estado será 'Activo' si está marcado, 'Inactivo' si está desmarcado -->
+                                <input type="hidden" name="estado" th:value="${usuario.estado == 'Activo' ? 'Inactivo' : 'Activo'}"/>
+                                <div class="form-check form-switch form-check-reverse">
+                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse" 
+                                           th:checked="${usuario.estado == 'Activo'}" onchange="submitForm(this)">
+                                </div>
+                        </div>
+                        <label class="form-check-label">Puntos de Lealtad: <span class="badge rounded-pill text-bg-success" th:text="${totalPuntos}"></span> puntos | Miembro desde: <span th:text="${usuario.fechaRegistro}"></span></label>
+                    </div>
+                </div>
+
+                <!-- Acordeon de Información-->
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                          Información General
+                        </button>
+                      </h2>
+                      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          
+                            <!--CUERPO DE LA INFORMACIÓN GENERAL-->
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label for="validationCustom01" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="nombreCompleto" th:field="${usuario.nombreCompleto}" readonly>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <label for="validationCustom02" class="form-label">Correo Eléctronico</label>
+                                    <input type="text" class="form-control" id="email" th:field="${usuario.email}" readonly >
+                                  </div>
+                                  
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                          Información de Contacto
+                        </button>
+                      </h2>
+                      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <!--INFORMACIÓN DE CONTACTO-->
+                            <!--INFORMACIÓN DE CONTACTO-->
+                            <form th:action="@{/Usuarios/editarDireccion/{id}(id=${usuario.id})}" method="post">
+                              <div class="row g-3">
+                                  <div class="col-md-8">
+                                      <label for="validationCustom01" class="form-label">Dirección Principal</label>
+                                      <input type="text" class="form-control" id="validationCustom01" th:field="${usuario.direccionPrincipal}" required>
+                                      <div class="valid-feedback">
+                                        Looks good!
+                                      </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <label for="validationCustom04" class="form-label">Teléfono</label>
+                                      <input type="text" class="form-control" id="validationCustom02" th:field="${usuario.telefono}" >
+                                      <div class="invalid-feedback">
+                                        Please select a valid state.
+                                      </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                      <label for="validationCustom04" class="form-label">Dirección Adicional</label>
+                                      <input type="text" class="form-control" id="validationCustom02" th:field="${usuario.direccionAlternativa}" >
+                                      <div class="invalid-feedback">
+                                        Please select a valid state.
+                                      </div>
+                                    </div>
+  
+                                    <div class="d-grid gap-2 col-6 mx-auto">
+                                      <button class="btn btn-primary" type="submit">Guardar Información de Contacto</button>
+                                    </div>
+                              </div>
+                              </form>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                          Puntos y Cupones Disponibles
+                        </button>
+                      </h2>
+                      <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <!-- Contenedor de los cupones con 3 cupones por fila -->
+                            <div class="row row-cols-1 row-cols-md-3 g-4"> <!-- 1 columna en pantallas pequeñas y 3 columnas en pantallas medianas y grandes -->
+                              <div th:each="cupon, iterStat : ${cupones}">
+                                  <!-- Cada 3 cupones, crear una nueva fila -->
+                                  <div th:if="${iterStat.index % 3 == 0}" class="w-100"></div>
+                          
+                                  <!-- Columna para cada cupón -->
+                                  <div class="col">
+                                      <div class="card">
+                                          <div class="row g-0">
+                                              <!-- Lado izquierdo: Fecha de vencimiento -->
+                                              <div class="col-md-4 bg-light text-center d-flex flex-column justify-content-center">
+                                                  <div class="card-body">
+                                                      <h5 class="card-title">Fecha de Vencimiento</h5>
+                                                      <p class="card-text">
+                                                          <span th:text="${cupon.fechaVencimiento}"></span>
+                                                      </p>
+                                                  </div>
+                                              </div>
+                          
+                                              <!-- Lado derecho: Información general del cupón -->
+                                              <div class="col-md-8">
+                                                  <div class="card-body">
+                                                      <h5 class="card-title">Cupón de Descuento</h5>
+                                                      <p class="card-text">
+                                                          <strong>Código:</strong> <span th:text="${cupon.codigo}"></span>
+                                                      </p>
+                                                      <p class="card-text">
+                                                          <strong>Descuento:</strong> <span th:text="${cupon.descuento}"></span>%
+                                                      </p>
+                                                      <p class="card-text">
+                                                          <small class="text-muted">Válido hasta el <span th:text="${cupon.fechaVencimiento}"></span>.</small>
+                                                      </p>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>  
+    <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

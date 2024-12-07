@@ -13,7 +13,8 @@ public class InicioController {
     }
 
     @GetMapping({"/publico"})
-    public String inicioPublico(){
+    public String inicioPublico(Model model){
+        model.addAttribute("titulo", "FOOD-DRIVE");
         return "inicioPublico";
     }
 

@@ -107,11 +107,16 @@ public class ProductoController {
         model.addAttribute("categoria", listaCategoria);
         return "producto/editarProducto";  // Mostrar la misma vista con el formulario de edición
     }
-    @GetMapping("/producto/delete/{id_producto}") 
-    public String eliminar(@PathVariable("id_producto") Long idProducto, Model model) {
+    @GetMapping("/producto/delete/{id_producto}")
+public String eliminar(@PathVariable("id_producto") Long idProducto, RedirectAttributes redirectAttributes) {
+    try {
         productoService.eliminar(idProducto);
-        return "redirect:/producto";  // Mostrar la misma vista con el formulario de edición
+        redirectAttributes.addFlashAttribute("success", "Producto eliminado exitosamente.");
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("error", "Asegurese de que el producto no tenga ordenes pendientes.");
     }
+    return "redirect:/producto";  // Regresar a la misma vista
+}
 
     @Autowired
     private IMenuService menuService;

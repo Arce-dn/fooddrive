@@ -13,6 +13,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto me-3">
+              <li><a th:onclick="|logoutForm.submit();|" class="nav-link active">
+                <span class="btn btn-outline-light">🏃‍♂️ Salir</span>
+            </a></li>
               <li><a th:href="@{/Menu/{username}(username=${#authentication.name})}" class="nav-link active">
                 <span class="btn btn-outline-light">ver Menú</span>
             </a></li>
@@ -21,13 +24,12 @@
                 </a></li>
                 
             </ul>
-                
-            
-            <button class="btn btn-light" id="btnCarrito" data-bs-toggle="modal" data-bs-target="#carritoModal">
-                🛒 Carrito (<span id="carritoCantidad">0</span>)
-            </button>
         </div>
     </div>
+
+    <form th:action="@{/logout}" method="post" th:id="logoutForm" style="display: none;">
+      <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+  </form>
 </nav>
     <div class="wrappers">
         <div class="main2 p-3">

@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class InicioController {
 
     @GetMapping({"/Inicio", "/"})
-    public String index(){
+    public String index(Model model){
+        model.addAttribute("titulo", "FOOD-DRIVE");
         return "home";
     }
 

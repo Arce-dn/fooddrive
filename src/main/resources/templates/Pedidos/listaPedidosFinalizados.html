@@ -37,6 +37,7 @@
                         <th scope="col">Total</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Repartidor</th>
+                        <th scope="col">Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -47,6 +48,9 @@
                         <td th:text="'$ ' + ${pedido.total}"></td>
                         <td th:text="${pedido.estado}"></td>
                         <td th:text="${pedido.repartidor != null ? pedido.repartidor.username : 'Sin asignar'}"></td>
+                        <td>
+                          <a class="btn btn-info" th:href="@{/pedidos/detalle/{id}(id=${pedido.id})}" data-toggle="tooltip" title="Ver detalles"><i class="bi bi-eye-fill"></i></a> 
+                      </td>
                       </tr>
                     </tbody>
                   </table>

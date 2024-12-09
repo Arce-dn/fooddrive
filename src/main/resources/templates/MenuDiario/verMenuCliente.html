@@ -34,6 +34,20 @@
             <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
         </form>
     </nav>
+
+    <!-- Alerta flotante -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3" role="alert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3" role="alert">
+        <!-- Ícono de éxito -->
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <!-- Botón para cerrar -->
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <div>
         <!--<aside th:replace="~{plantilla :: aside}"></aside>-->
         
